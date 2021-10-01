@@ -11,6 +11,7 @@ class LayoutHaveFloatingButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
       padding: EdgeInsets.all(16.w),
       child: Column(
         children: [

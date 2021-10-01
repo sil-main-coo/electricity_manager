@@ -32,7 +32,14 @@ class _CreateElectricityScreenState extends State<CreateElectricityScreen> {
     });
   }
 
-  void _finishStep() {}
+  void _finishStep() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (_) => ConfirmInfoScreen(
+                  reportModel: _reportModel,
+                )));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +50,11 @@ class _CreateElectricityScreenState extends State<CreateElectricityScreen> {
           InputInfoPage(
             nextCallback: (staffName, clientCode, clientName, clientAddress) {
               _reportModel.setInfo(
-                  staffName, clientCode, clientName, clientAddress);
+                  staffName,
+                  clientCode,
+                  clientName,
+                  clientAddress,
+                  'Thay thế định kỳ'); // Thay thế định kỳ/thay cháy hỏng
               _nextStep();
             },
           ),
@@ -56,10 +67,33 @@ class _CreateElectricityScreenState extends State<CreateElectricityScreen> {
             backCallback: _backStep,
           ),
           CongToTreoPage(
-            nextCallback: (maCongTo, soCongTo, chiSoThao, temKiemDinh,
-                ngayKiemDinh, pictures) {
-              _reportModel.setCongToTreo(maCongTo, soCongTo, chiSoThao,
-                  temKiemDinh, ngayKiemDinh, pictures);
+            nextCallback: (maCongTo,
+                soCongTo,
+                heSoNhan,
+                chiSoTreo,
+                maChiKD,
+                vienChiKD,
+                maChiBooc,
+                vienChiBooc,
+                maChiHop,
+                vienChiHop,
+                temKiemDinh,
+                ngayKiemDinh,
+                pictures) {
+              _reportModel.setCongToTreo(
+                  maCongTo,
+                  soCongTo,
+                  heSoNhan,
+                  chiSoTreo,
+                  maChiKD,
+                  vienChiKD,
+                  maChiBooc,
+                  vienChiBooc,
+                  maChiHop,
+                  vienChiHop,
+                  temKiemDinh,
+                  ngayKiemDinh,
+                  pictures);
               _nextStep();
             },
             backCallback: _backStep,
@@ -67,14 +101,9 @@ class _CreateElectricityScreenState extends State<CreateElectricityScreen> {
           AdditionalPage(
             nextCallback: (signPicture) {
               _reportModel.anhChuKy = signPicture;
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (_) => ConfirmInfoScreen(
-                            reportModel: _reportModel,
-                          )));
+              _finishStep();
             },
-            backCallback: _finishStep,
+            backCallback: _backStep,
           )
         ],
       ),

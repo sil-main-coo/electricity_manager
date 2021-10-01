@@ -1,6 +1,5 @@
-
-
 import 'package:electricity_manager/commons/pref_key.dart';
+import 'package:electricity_manager/di/locator.dart';
 import 'package:electricity_manager/utils/helpers/session/shared_pref_manager.dart';
 
 class SessionPref {

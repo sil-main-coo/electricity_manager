@@ -14,7 +14,7 @@ class InputInfoPage extends StatefulWidget {
 }
 
 class _InputInfoPageState extends State<InputInfoPage> {
-  final _staffNameCtrl = TextEditingController();
+  final _staffNameCtrl = TextEditingController(text: 'Nguyễn Đức Toàn');
   final _clientCodeCtrl = TextEditingController();
   final _clientNameCtrl = TextEditingController();
   final _clientAddressCtrl = TextEditingController();
@@ -67,8 +67,11 @@ class _InputInfoPageState extends State<InputInfoPage> {
           child: Column(
             children: [
               AppField(
+                enable: false,
                 controller: _staffNameCtrl,
                 fcNode: _staffNameNode,
+                nextFcNode: _clientCodeNode,
+                isName: true,
                 autoFocus: true,
                 textInputAction: TextInputAction.next,
                 label: 'Tên nhân viên:',
@@ -78,13 +81,16 @@ class _InputInfoPageState extends State<InputInfoPage> {
                 controller: _clientCodeCtrl,
                 label: 'Mã khách hàng:',
                 fcNode: _clientCodeNode,
+                nextFcNode: _clientNameNode,
                 textInputAction: TextInputAction.next,
                 hintText: 'Nhập mã khách hàng',
               ),
               AppField(
                 controller: _clientNameCtrl,
                 label: 'Tên khách hàng:',
+                isName: true,
                 fcNode: _clientNameNode,
+                nextFcNode: _clientAddressNode,
                 textInputAction: TextInputAction.next,
                 hintText: 'Nhập tên khách hàng',
               ),
@@ -92,6 +98,7 @@ class _InputInfoPageState extends State<InputInfoPage> {
                 controller: _clientAddressCtrl,
                 textInputAction: TextInputAction.done,
                 fcNode: _clientAddressNode,
+                isName: true,
                 label: 'Địa chỉ khách hàng:',
                 hintText: 'Nhập địa chỉ khách hàng',
               )

@@ -99,7 +99,8 @@ class _CongToThaoPageState extends State<CongToThaoPage> {
               AppField(
                 controller: _maCongToCtrl,
                 fcNode: _maCongToNode,
-                autoFocus: true,
+                nextFcNode: _soCongToNode,
+                // autoFocus: true,
                 textInputAction: TextInputAction.next,
                 label: 'Mã công tơ:',
                 hintText: 'Nhập mã công tơ tháo',
@@ -108,6 +109,7 @@ class _CongToThaoPageState extends State<CongToThaoPage> {
                 controller: _soCongToCtrl,
                 label: 'Số công tơ:',
                 fcNode: _soCongToNode,
+                nextFcNode: _chiSoThaoNode,
                 textInputAction: TextInputAction.next,
                 keyboardType: TextInputType.number,
                 hintText: 'Nhập số công tơ tháo',
@@ -115,6 +117,7 @@ class _CongToThaoPageState extends State<CongToThaoPage> {
               AppField(
                 controller: _chiSoThaoCtrl,
                 textInputAction: TextInputAction.done,
+                keyboardType: TextInputType.number,
                 fcNode: _chiSoThaoNode,
                 label: 'Chỉ số tháo hữu công:',
                 hintText: 'Nhập chỉ số tháo hữu công',

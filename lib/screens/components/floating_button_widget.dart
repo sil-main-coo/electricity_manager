@@ -6,11 +6,15 @@ import 'app_button.dart';
 
 class FloatingButtonWidget extends StatelessWidget {
   const FloatingButtonWidget(
-      {Key? key, required this.onPressed, required this.label})
+      {Key? key,
+      required this.onPressed,
+      required this.label,
+      this.color = Colors.blue})
       : super(key: key);
 
   final Function onPressed;
   final String label;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +23,7 @@ class FloatingButtonWidget extends StatelessWidget {
       child: AppButton(
         onPressed: () => onPressed(),
         label: label,
+        color: color,
       ),
     );
   }

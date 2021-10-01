@@ -1,0 +1,1 @@
+const URL_REPLACE_WORD = 'https://ddpham216001.herokuapp.com/api/post_file/';
