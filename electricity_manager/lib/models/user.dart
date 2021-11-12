@@ -2,14 +2,29 @@ import 'dart:convert';
 
 class User {
   String? useName, password;
+  DateTime? createAt, updateAt;
   UserProfile? profile;
 
-  User({this.password, this.useName, this.profile});
+  User(
+      {this.password,
+      this.useName,
+      this.profile,
+      DateTime? createAt,
+      DateTime? updateAt}) {
+    this.createAt = createAt ?? DateTime.now();
+    this.updateAt = updateAt ?? DateTime.now();
+  }
 
   factory User.fromJson(Map<String, dynamic> json, [String? id]) {
     return User(
         password: json['password'],
         useName: json['userName'],
+        createAt: json['createAt'] != null
+            ? DateTime.fromMillisecondsSinceEpoch(json['createAt'])
+            : null,
+        updateAt: json['updateAt'] != null
+            ? DateTime.fromMillisecondsSinceEpoch(json['updateAt'])
+            : null,
         profile: json['profile'] != null
             ? UserProfile.fromJson(Map<String, dynamic>.from(json['profile']))
             : null);
@@ -27,6 +42,8 @@ class User {
     return {
       'password': this.password,
       'userName': this.useName,
+      'createAt': this.createAt?.millisecondsSinceEpoch,
+      'updateAt': this.updateAt?.millisecondsSinceEpoch,
       'profile': this.profile?.toJson()
     };
   }
