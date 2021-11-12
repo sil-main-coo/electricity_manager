@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:electricity_manager/commons/text_styles.dart';
 import 'package:electricity_manager/models/report_model.dart';
+import 'package:electricity_manager/utils/commons/text_styles.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 

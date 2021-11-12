@@ -1,7 +1,5 @@
-import 'package:electricity_manager/commons/text_styles.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
-
 import 'app_button.dart';
 
 class FloatingButtonWidget extends StatelessWidget {

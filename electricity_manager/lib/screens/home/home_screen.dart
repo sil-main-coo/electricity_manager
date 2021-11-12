@@ -1,4 +1,4 @@
-import 'package:electricity_manager/commons/text_styles.dart';
+import 'package:electricity_manager/utils/commons/text_styles.dart';
 import 'package:electricity_manager/di/locator.dart';
 import 'package:electricity_manager/models/report_model.dart';
 import 'package:electricity_manager/screens/components/floating_button_widget.dart';
@@ -6,10 +6,11 @@ import 'package:electricity_manager/screens/components/layout_have_floating_butt
 import 'package:electricity_manager/screens/create_electricity_info/create_electricity_screen.dart';
 import 'package:electricity_manager/screens/detail_info/detail_info_sreen.dart';
 import 'package:electricity_manager/utils/helpers/firebase/firebase_db_helpers.dart';
-import 'package:electricity_manager/utils/helpers/firebase/firebase_storage_helper.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import 'drawer_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -42,6 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   : Center(
                       child: Text('Danh sách trống. Hãy tạo biên bản mới'),
                     ),
+              drawer: DrawerWidget(),
               floatingActionButton: FloatingButtonWidget(
                 onPressed: () => Navigator.push(
                     context,

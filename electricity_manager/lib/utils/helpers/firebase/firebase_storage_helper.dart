@@ -1,9 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-
-import 'package:electricity_manager/commons/urls.dart';
 import 'package:electricity_manager/models/report_model.dart';
+import 'package:electricity_manager/utils/commons/urls.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;

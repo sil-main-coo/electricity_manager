@@ -1,26 +1,22 @@
-import 'package:electricity_manager/commons/pref_key.dart';
 import 'package:electricity_manager/di/locator.dart';
+import 'package:electricity_manager/utils/commons/shared_preferences_keys.dart';
 import 'package:electricity_manager/utils/helpers/session/shared_pref_manager.dart';
 
 class SessionPref {
   static void saveSession(
-      {required String accessToken, required String refreshToken}) {
+      {required String accessToken}) {
     var preferencesManager = getIt.get<SharedPreferencesManager>();
-    preferencesManager.putString(keyAccessToken, accessToken);
-    preferencesManager.putString(keyRefreshToken, refreshToken);
+    preferencesManager.putString(SharedPrefsKeys.uid, accessToken);
   }
 
   static String? getAccessToken() =>
-      getIt.get<SharedPreferencesManager>().getString(keyAccessToken);
-
-  static String? getRefreshToken() =>
-      getIt.get<SharedPreferencesManager>().getString(keyRefreshToken);
+      getIt.get<SharedPreferencesManager>().getString(SharedPrefsKeys.uid);
 
   static bool isSessionValid() {
     try {
       return getIt
           .get<SharedPreferencesManager>()
-          .getString(keyAccessToken)
+          .getString(SharedPrefsKeys.uid)
           ?.isNotEmpty ==
           true;
     } catch (e) {

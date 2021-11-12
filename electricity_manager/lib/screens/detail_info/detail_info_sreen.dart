@@ -1,6 +1,5 @@
 import 'dart:io';
-
-import 'package:electricity_manager/commons/text_styles.dart';
+import 'package:electricity_manager/utils/commons/text_styles.dart';
 import 'package:electricity_manager/di/locator.dart';
 import 'package:electricity_manager/models/report_model.dart';
 import 'package:electricity_manager/screens/components/detail_info_layout.dart';

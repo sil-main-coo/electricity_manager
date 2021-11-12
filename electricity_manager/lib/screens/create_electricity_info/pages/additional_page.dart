@@ -1,9 +1,9 @@
 import 'dart:typed_data';
 
-import 'package:electricity_manager/commons/text_styles.dart';
 import 'package:electricity_manager/di/locator.dart';
 import 'package:electricity_manager/screens/components/floating_button_widget.dart';
 import 'package:electricity_manager/screens/components/picker_image_bottomsheet.dart';
+import 'package:electricity_manager/utils/commons/text_styles.dart';
 import 'package:electricity_manager/utils/helpers/image_picker_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

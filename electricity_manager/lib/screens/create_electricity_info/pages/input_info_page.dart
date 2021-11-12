@@ -1,4 +1,4 @@
-import 'package:electricity_manager/commons/text_styles.dart';
+import 'package:electricity_manager/utils/commons/text_styles.dart';
 import 'package:electricity_manager/screens/components/app_field.dart';
 import 'package:electricity_manager/screens/components/floating_button_widget.dart';
 import 'package:flutter/material.dart';

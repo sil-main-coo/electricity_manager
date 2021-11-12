@@ -4,7 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class AppField extends StatefulWidget {
   const AppField(
       {Key? key,
-        this.enable = true,
+      this.autoDispose = false,
+      this.obscureText = false,
+      this.validator,
+      this.enable = true,
       this.isName = false,
       this.nextFcNode,
       required this.controller,
@@ -26,6 +29,9 @@ class AppField extends StatefulWidget {
   final Widget? preIcon;
   final bool isName;
   final bool enable;
+  final String? Function(String?)? validator;
+  final bool obscureText;
+  final bool autoDispose;
 
   @override
   _AppFieldState createState() => _AppFieldState();
@@ -35,8 +41,10 @@ class _AppFieldState extends State<AppField> {
   @override
   void dispose() {
     super.dispose();
-    widget.controller.dispose();
-    if (widget.fcNode != null) widget.fcNode?.dispose();
+    if (widget.autoDispose) {
+      widget.controller.dispose();
+      if (widget.fcNode != null) widget.fcNode?.dispose();
+    }
   }
 
   @override
@@ -51,9 +59,9 @@ class _AppFieldState extends State<AppField> {
       focusNode: widget.fcNode,
       autofocus: widget.autoFocus,
       enabled: widget.enable,
-      textCapitalization: widget.isName
-          ? TextCapitalization.words
-          : TextCapitalization.none,
+      obscureText: widget.obscureText,
+      textCapitalization:
+          widget.isName ? TextCapitalization.words : TextCapitalization.none,
       onFieldSubmitted: (value) {
         if (widget.textInputAction == TextInputAction.next) {
           if (widget.nextFcNode != null) {
@@ -70,10 +78,12 @@ class _AppFieldState extends State<AppField> {
       style: style,
       textInputAction: widget.textInputAction,
       keyboardType: widget.keyboardType,
-      validator: (value) {
-        if (value == null || value.isEmpty) return 'Trường bắt buộc';
-        return null;
-      },
+      validator: widget.validator != null
+          ? widget.validator
+          : (value) {
+              if (value == null || value.isEmpty) return 'Trường bắt buộc';
+              return null;
+            },
       decoration: InputDecoration(
           labelText: widget.label,
           labelStyle: labelStyle,
