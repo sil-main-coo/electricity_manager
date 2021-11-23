@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
             }
           },
           child: MaterialApp(
-            title: 'Flutter Demo',
+            title: 'Quản lý điện lực',
             theme: ThemeData(
               primarySwatch: Colors.blue,
             ),

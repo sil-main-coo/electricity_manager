@@ -4,6 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class AppField extends StatefulWidget {
   const AppField(
       {Key? key,
+      this.isMultiLine = false,
+      this.isRequired = true,
       this.autoDispose = false,
       this.obscureText = false,
       this.validator,
@@ -16,7 +18,7 @@ class AppField extends StatefulWidget {
       this.autoFocus = false,
       this.textInputAction,
       this.keyboardType,
-      required this.label,
+      this.label,
       this.preIcon})
       : super(key: key);
 
@@ -25,13 +27,15 @@ class AppField extends StatefulWidget {
   final bool autoFocus;
   final TextInputAction? textInputAction;
   final TextInputType? keyboardType;
-  final String label, hintText;
+  final String? label, hintText;
   final Widget? preIcon;
   final bool isName;
   final bool enable;
   final String? Function(String?)? validator;
   final bool obscureText;
   final bool autoDispose;
+  final bool isRequired;
+  final bool isMultiLine;
 
   @override
   _AppFieldState createState() => _AppFieldState();
@@ -54,43 +58,60 @@ class _AppFieldState extends State<AppField> {
     final labelStyle = TextStyle(fontSize: 14.sp);
     final errorStyle = TextStyle(fontSize: 11.sp, color: Colors.red);
 
-    return TextFormField(
-      controller: widget.controller,
-      focusNode: widget.fcNode,
-      autofocus: widget.autoFocus,
-      enabled: widget.enable,
-      obscureText: widget.obscureText,
-      textCapitalization:
-          widget.isName ? TextCapitalization.words : TextCapitalization.none,
-      onFieldSubmitted: (value) {
-        if (widget.textInputAction == TextInputAction.next) {
-          if (widget.nextFcNode != null) {
-            FocusScope.of(context).unfocus();
-            FocusScope.of(context).requestFocus(widget.nextFcNode);
+    return Padding(
+      padding: widget.isMultiLine
+          ? EdgeInsets.zero
+          : EdgeInsets.symmetric(vertical: 8.0.w),
+      child: TextFormField(
+        controller: widget.controller,
+        focusNode: widget.fcNode,
+        autofocus: widget.autoFocus,
+        enabled: widget.enable,
+        maxLines: widget.isMultiLine ? 10: 1,
+        obscureText: widget.obscureText,
+        textCapitalization:
+            widget.isName ? TextCapitalization.words : TextCapitalization.none,
+        onFieldSubmitted: (value) {
+          if (widget.textInputAction == TextInputAction.next) {
+            if (widget.nextFcNode != null) {
+              FocusScope.of(context).unfocus();
+              FocusScope.of(context).requestFocus(widget.nextFcNode);
+            }
+            return;
           }
-          return;
-        }
 
-        if (widget.textInputAction == TextInputAction.done) {
-          FocusScope.of(context).unfocus();
-        }
-      },
-      style: style,
-      textInputAction: widget.textInputAction,
-      keyboardType: widget.keyboardType,
-      validator: widget.validator != null
-          ? widget.validator
-          : (value) {
-              if (value == null || value.isEmpty) return 'Trường bắt buộc';
-              return null;
-            },
-      decoration: InputDecoration(
+          if (widget.textInputAction == TextInputAction.done) {
+            FocusScope.of(context).unfocus();
+          }
+        },
+        style: style,
+        textInputAction: widget.textInputAction,
+        keyboardType: widget.keyboardType,
+        validator: !widget.isRequired
+            ? null
+            : widget.validator != null
+                ? widget.validator
+                : (value) {
+                    if (value == null || value.trim().isEmpty)
+                      return 'Trường bắt buộc';
+                    return null;
+                  },
+        decoration: InputDecoration(
           labelText: widget.label,
           labelStyle: labelStyle,
           hintStyle: hintStyle,
+          contentPadding: EdgeInsets.all(8.0.w),
           hintText: widget.hintText,
           errorStyle: errorStyle,
-          prefixIcon: widget.preIcon),
+          prefixIcon: widget.preIcon,
+          border: widget.enable
+              ? OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                  borderSide: BorderSide(width: 1.0),
+                )
+              : null,
+        ),
+      ),
     );
   }
 }

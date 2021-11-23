@@ -118,7 +118,7 @@ class FirebaseStorageHelpers {
   }
 
   Future<void> removeReportData(String id) async {
-    final imagesRef = await _refImageStorage.child(id);
+    final imagesRef = _refImageStorage.child(id);
 
     final imageCTThaos = await imagesRef.child('CTThao').listAll();
     final imageCTTreos = await imagesRef.child('CTTreo').listAll();

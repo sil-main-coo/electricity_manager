@@ -1,0 +1,1 @@
+enum DETAIL_VIEW { PREVIEW, DETAIL }

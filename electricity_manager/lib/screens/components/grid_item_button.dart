@@ -29,8 +29,8 @@ class GridItemButton extends StatelessWidget {
                   ? Icon(iconData)
                   : SvgPicture.asset(
                       iconPath,
-                      height: 32.w,
-                      width: 32.w,
+                      height: 48.w,
+                      width: 48.w,
                     ),
               SizedBox(
                 height: 8.w,

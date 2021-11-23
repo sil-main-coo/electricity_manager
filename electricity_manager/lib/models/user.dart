@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:electricity_manager/utils/commons/role_constants.dart';
+
 class User {
   String? useName, password;
   DateTime? createAt, updateAt;
@@ -50,11 +52,16 @@ class User {
 }
 
 class UserProfile {
-  String? id, fullName, role, avatar, phone;
+  String? id, fullName, role, avatar, phone, roleName;
+
+  String get roleString => RoleConstants.mapRoleToString(roleName);
+
+  bool get isAdmin => role == RoleConstants.ADMIN;
 
   UserProfile(
       {this.id,
       this.fullName,
+      this.roleName,
       this.role = 'EMPLOYEE',
       this.avatar,
       this.phone});
@@ -63,6 +70,7 @@ class UserProfile {
     return UserProfile(
         id: id ?? json['id'],
         fullName: json['fullName'],
+        roleName: json['roleName'],
         avatar: json['avatar'],
         phone: json['phone'],
         role: json['role']);
@@ -83,6 +91,12 @@ class UserProfile {
       'avatar': this.avatar,
       'id': this.id,
       'phone': this.phone,
+      'roleName': this.roleName
     };
+  }
+
+  @override
+  String toString() {
+    return this.fullName != null ? '${this.fullName} ($roleString)' : '';
   }
 }

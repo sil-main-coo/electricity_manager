@@ -29,6 +29,8 @@ dependencies:
   equatable: ^2.0.3
   flutter_bloc: ^7.2.0
   flutter_svg: ^0.22.0
+  font_awesome_flutter: ^9.2.0
+  fl_chart: ^0.40.2
 
 dev_dependencies:
   flutter_test:

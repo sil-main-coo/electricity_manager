@@ -1,7 +1,10 @@
+import 'package:electricity_manager/app_bloc/app_bloc.dart';
+import 'package:electricity_manager/di/locator.dart';
 import 'package:electricity_manager/screens/home/summary_page/summary_page.dart';
 import 'package:electricity_manager/utils/commons/text_styles.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'drawer_widget.dart';
 import 'feature_page/feature_page.dart';
@@ -14,6 +17,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final _appBloc = getIt.get<AppBloc>();
+
   final _pages = [FeaturePage(), SummaryPage()];
   int _index = 0;
 
@@ -22,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Quản lý đồng hồ điện',
+          _appBloc.isAdmin ? 'Quản trị phần mềm' : 'Quản lý điện lực',
           style: titleWhite.copyWith(fontSize: 22.sp),
         ),
         centerTitle: true,
@@ -40,9 +45,9 @@ class _HomeScreenState extends State<HomeScreen> {
           });
         },
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Chức năng'),
+          BottomNavigationBarItem(icon: FaIcon(FontAwesomeIcons.home), label: 'Chức năng'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.bubble_chart), label: 'Tổng kết')
+              icon: FaIcon(FontAwesomeIcons.chartLine), label: 'Thống kê')
         ],
       ),
     );

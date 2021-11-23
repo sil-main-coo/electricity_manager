@@ -17,7 +17,7 @@ class FeatureHeader extends StatelessWidget {
       child: Row(
         children: [
           Expanded(flex: 2, child: _introductionWidget(context)),
-          Expanded(child: _imageWelcome()),
+          Expanded(flex: 1, child: _imageWelcome()),
         ],
       ),
     );
@@ -40,17 +40,14 @@ class FeatureHeader extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(
-          width: 16.w,
+        Padding(
+          padding: EdgeInsets.only(top: 16.w, bottom: 4.w),
+          child: Text(
+            'Chúc bạn một ngày làm việc hiệu quả!',
+          ),
         ),
         Text(
-          'Chúc bạn một ngày làm việc hiệu quả!',
-        ),
-        SizedBox(
-          width: 8.w,
-        ),
-        Text(
-          'Hãy bắt đầu bằng cách chọn các\ntính năng ở phía dưới.',
+          'Hãy bắt đầu bằng cách chọn một trong \ncác tính năng ở phía dưới.',
         ),
       ],
     );

@@ -5,6 +5,8 @@ class SummaryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Center(
+      child: Text('Tính năng đang được phát triển'),
+    );
   }
 }

@@ -91,27 +91,6 @@ class DrawerWidget extends StatelessWidget {
             Expanded(
               child: Column(
                 children: [
-                  Expanded(
-                    flex: 3,
-                    child: Column(
-                      children: [
-                        ListTile(
-                          onTap: () {
-                            Navigator.pop(context);
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => ManagerAccountScreen()));
-                          },
-                          leading: Icon(Icons.manage_accounts),
-                          title: Text(
-                            'Danh sách nhân viên',
-                            style: TextStyle(fontSize: 18.w),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                   ListTile(
                     onTap: () => _signOutDialog(context),
                     leading: Icon(Icons.logout),
