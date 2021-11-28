@@ -1,4 +1,5 @@
 import 'package:electricity_manager/models/device.dart';
+import 'package:electricity_manager/screens/components/app_field.dart';
 import 'package:electricity_manager/screens/components/fields/dropdown_field.dart';
 import 'package:electricity_manager/screens/components/floating_button_widget.dart';
 import 'package:electricity_manager/screens/components/layout_have_floating_button.dart';
@@ -45,6 +46,7 @@ class _DeviceInfoPageState extends State<DeviceInfoPage> {
       FocusScope.of(context).unfocus();
       final devices = _deviceWidgets.map((e) {
         e.device?.count = e.count;
+        e.device?.note = e.noteCtrl.text.trim();
         return e.device!;
       }).toList();
       widget.nextCallback(devices);
@@ -227,6 +229,13 @@ class _DeviceInfoPageState extends State<DeviceInfoPage> {
             ),
           ],
         ),
+        AppField(
+          controller: deviceModel.noteCtrl,
+          label: 'Ghi chú',
+          isRequired: false,
+          textInputAction: TextInputAction.done,
+          hintText: 'Nhập ghi chú vật tư',
+        )
       ],
     );
   }

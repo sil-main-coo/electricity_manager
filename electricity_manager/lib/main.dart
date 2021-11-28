@@ -10,7 +10,6 @@ import 'di/locator.dart';
 import 'screens/home/home_screen.dart';
 import 'screens/login/bloc/login_bloc.dart';
 import 'screens/login/login.dart';
-import 'utils/helpers/firebase/firebase_storage_helper.dart';
 
 /// có 3 hướng:
 /// - html -> content -> replace -> convert to word
@@ -66,7 +65,7 @@ class MyApp extends StatelessWidget {
               },
               builder: (context, state) {
                 if (state is AppAuthenticated) {
-                  return _buildHomeScreen();
+                  return HomeScreen();
                 }
                 if (state is AppUnauthenticated) {
                   return LoginPage();
@@ -81,27 +80,6 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildHomeScreen() {
-    return FutureBuilder(
-      future: getIt.get<FirebaseStorageHelpers>().getReportTemplate(),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Text('error');
-        }
-
-        if (snapshot.hasData) {
-          return HomeScreen();
-        }
-
-        return Scaffold(
-          body: Center(
-            child: const CircularProgressIndicator(),
-          ),
-        );
-      },
     );
   }
 }

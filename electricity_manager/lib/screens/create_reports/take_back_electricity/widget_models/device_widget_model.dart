@@ -5,6 +5,7 @@ class DeviceWidgetModel {
   final deviceCtrl = TextEditingController();
   final actionCtrl = TextEditingController(text: 'Lắp mới');
   final stateCtrl = TextEditingController();
+  final noteCtrl = TextEditingController();
   Device? device;
   int count = 1;
 

@@ -256,11 +256,11 @@ class _ResolveDevicePageState extends State<ResolveDevicePage> {
                 label: 'Hành động',
                 enable: false,
                 textInputAction: TextInputAction.done,
-                hintText: 'Nhập trạng thái thiết bị',
+                hintText: 'Chọn hành đồng',
               ),
             ),
           ],
-        )
+        ),
       ],
     );
   }

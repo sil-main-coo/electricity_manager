@@ -28,9 +28,11 @@ class TakeBackDetailLayout extends StatelessWidget {
           _dividerWidget(),
           _devicesWidget(context),
           _dividerWidget(),
-          _customerSignWidget(context),
-          _dividerWidget(),
           _staffSignWidget(context),
+          _dividerWidget(),
+          _managerSignWidget(context),
+          _dividerWidget(),
+          _presidentSignWidget(context),
         ],
       ),
     );
@@ -64,7 +66,7 @@ class TakeBackDetailLayout extends StatelessWidget {
         SizedBox(
           height: 8.w,
         ),
-        _labelValueText('Ngày lập biên bản: ', reportModel.createAtString()),
+        _labelValueText('Ngày lập biên bản: ', reportModel.createAtString),
         _labelValueText('Mã khách hàng: ', reportModel.clientCode),
         _labelValueText(
             'Họ và tên khách hàng: ', reportModel.clientName?.toUpperCase()),
@@ -133,21 +135,23 @@ class TakeBackDetailLayout extends StatelessWidget {
         SizedBox(
           height: 8.w,
         ),
-        _deviceItem('STT', 'Tên vật tư', 'Số lượng', true),
+        _deviceItem('STT', 'Tên vật tư', 'SL', 'Ghi chú', true),
         if (reportModel.devices != null)
           Column(
             children: List.generate(
                 reportModel.devices!.length,
                 (index) => _deviceItem(
-                    '${index + 1}',
-                    reportModel.devices?[index].name ?? '',
-                    reportModel.devices?[index].count.toString() ?? '0')),
+                      '${index + 1}',
+                      reportModel.devices?[index].name ?? '',
+                      reportModel.devices?[index].count.toString() ?? '0',
+                      reportModel.devices?[index].note ?? '',
+                    )),
           )
       ],
     );
   }
 
-  Widget _deviceItem(String stt, String name, String count,
+  Widget _deviceItem(String stt, String name, String count, String note,
       [bool isMenu = false]) {
     final style = TextStyle(
         fontSize: 18.sp,
@@ -179,6 +183,13 @@ class TakeBackDetailLayout extends StatelessWidget {
             flex: 1,
             child: Text(
               count,
+              style: style,
+            ),
+          ),
+          Expanded(
+            flex: 2,
+            child: Text(
+              note,
               textAlign: TextAlign.end,
               style: style,
             ),
@@ -222,7 +233,7 @@ class TakeBackDetailLayout extends StatelessWidget {
     );
   }
 
-  Widget _customerSignWidget(BuildContext context) {
+  Widget _managerSignWidget(BuildContext context) {
     final titleStyle = TextStyle(
         fontWeight: FontWeight.bold, fontSize: 20.sp, color: Colors.blue[600]);
 
@@ -230,7 +241,7 @@ class TakeBackDetailLayout extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'CHỮ KÝ KHÁCH HÀNG',
+          'CHỮ KÝ TRƯỞNG PHÒNG',
           style: titleStyle,
         ),
         SizedBox(
@@ -238,8 +249,30 @@ class TakeBackDetailLayout extends StatelessWidget {
         ),
         _containerHasPicture(
             context: context,
-            url: reportModel.urlCustomerSignImage,
-            image: reportModel.customerSignImage)
+            url: reportModel.urlManagerSignImage,
+            image: reportModel.managerSignImage)
+      ],
+    );
+  }
+
+  Widget _presidentSignWidget(BuildContext context) {
+    final titleStyle = TextStyle(
+        fontWeight: FontWeight.bold, fontSize: 20.sp, color: Colors.blue[600]);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'CHỮ KÝ GIÁM ĐỐC',
+          style: titleStyle,
+        ),
+        SizedBox(
+          height: 8.w,
+        ),
+        _containerHasPicture(
+            context: context,
+            url: reportModel.urlPresidentSignImage,
+            image: reportModel.presidentSignImage)
       ],
     );
   }

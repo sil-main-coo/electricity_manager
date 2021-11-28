@@ -1,9 +1,17 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:electricity_manager/models/user.dart';
 import 'package:electricity_manager/utils/error/remote_exception.dart';
+import 'package:electricity_manager/utils/utils.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class AuthRemoteProvider {
   final refUsersDB = FirebaseDatabase.instance.reference().child('users');
+  final _refImageStorage =
+      FirebaseStorage.instance.ref().child('hinh-anh').child('nhan-vien');
+  var httpClient = new HttpClient();
 
   Stream<Event> streamData() {
     return refUsersDB.onValue;
@@ -26,7 +34,11 @@ class AuthRemoteProvider {
             user = User.fromJson(uData, uid);
           }
         });
-        if (user != null) return user;
+        if (user != null) {
+          user?.profile?.signImage =
+              await Utils.imageFromURL(user?.profile?.signImageURL);
+          return user;
+        }
       }
       throw RemoteException('Sai tài khoản hoặc mật khẩu');
     } catch (e) {
@@ -65,10 +77,44 @@ class AuthRemoteProvider {
     throw RemoteException('Cập nhật user thất bại');
   }
 
-  Future<void> removeUser(String id) async {
+  Future<void> updateUseProfileOnDB(
+      String id, Map<String, dynamic> data) async {
     try {
-      return await refUsersDB.child(id).remove();
+      return await refUsersDB.child(id).child('profile').update(data);
     } catch (e) {}
+    throw RemoteException('Cập nhật user thất bại');
+  }
+
+  Future<void> removeUser(String id) async {
+    print(id);
+    try {
+      await _removeStorageData(id);
+      return await refUsersDB.child(id).remove();
+    } catch (e) {
+      print(e);
+    }
     throw RemoteException('Xóa user thất bại');
+  }
+
+  /// upload image to report storage
+  Future<String?> uploadImageToStorage(
+      String uid, String imgName, Uint8List file) async {
+    final parentRef = _refImageStorage.child(uid).child(imgName);
+    try {
+      final uploadTask = await parentRef.putData(file);
+      return uploadTask.ref.getDownloadURL();
+    } catch (e) {
+      print(e);
+    }
+    return null;
+  }
+
+  /// remove report storage data
+  Future<void> _removeStorageData(String uid) async {
+    final imagesRef = await _refImageStorage.child(uid).listAll();
+
+    imagesRef.items.forEach((element) {
+      element.delete();
+    });
   }
 }

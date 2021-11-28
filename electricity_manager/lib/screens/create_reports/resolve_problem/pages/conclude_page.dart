@@ -10,15 +10,27 @@ import 'package:electricity_manager/utils/helpers/image_picker_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-enum ConcludePictures { BEFORE, AFTER, SIGN }
+enum ConcludePictures {
+  BEFORE,
+  AFTER,
+  ELECTRICITY_SIGN,
+  REGION_SIGN,
+  RELATED_SIGN
+}
 
 class ResolveConcludePage extends StatefulWidget {
   const ResolveConcludePage(
       {Key? key, required this.nextCallback, required this.backCallback})
       : super(key: key);
 
-  final Function(List<Uint8List> beforeImages, List<Uint8List> finishedImages,
-      Uint8List signImage, String resolveMeasure, String conclude) nextCallback;
+  final Function(
+      List<Uint8List> beforeImages,
+      List<Uint8List> finishedImages,
+      Uint8List relatedSign,
+      Uint8List regionSign,
+      Uint8List electricitySign,
+      String resolveMeasure,
+      String conclude) nextCallback;
   final Function backCallback;
 
   @override
@@ -30,7 +42,7 @@ class _ResolveConcludePageState extends State<ResolveConcludePage> {
   final _measureCtrl = TextEditingController();
   final _concludeCtrl = TextEditingController();
 
-  Uint8List? _signPicture;
+  Uint8List? _electricitySign, _regionSign, _relatedSign;
   List<Uint8List> _beforePictures = [];
   List<Uint8List> _afterPictures = [];
 
@@ -46,8 +58,14 @@ class _ResolveConcludePageState extends State<ResolveConcludePage> {
           case ConcludePictures.AFTER:
             _afterPictures.add(picture);
             return;
+          case ConcludePictures.RELATED_SIGN:
+            _relatedSign = picture;
+            return;
+          case ConcludePictures.REGION_SIGN:
+            _regionSign = picture;
+            return;
           default:
-            _signPicture = picture;
+            _electricitySign = picture;
         }
       });
     }
@@ -65,8 +83,14 @@ class _ResolveConcludePageState extends State<ResolveConcludePage> {
           case ConcludePictures.AFTER:
             _afterPictures.add(picture);
             return;
+          case ConcludePictures.RELATED_SIGN:
+            _relatedSign = picture;
+            return;
+          case ConcludePictures.REGION_SIGN:
+            _regionSign = picture;
+            return;
           default:
-            _signPicture = picture;
+            _electricitySign = picture;
         }
       });
     }
@@ -113,7 +137,15 @@ class _ResolveConcludePageState extends State<ResolveConcludePage> {
             SizedBox(
               height: 24.w,
             ),
-            _signImage(),
+            _relatedSignImage(),
+            SizedBox(
+              height: 24.w,
+            ),
+            _regionSignImage(),
+            SizedBox(
+              height: 24.w,
+            ),
+            _electricitySignImage()
           ],
         ),
       ),
@@ -121,9 +153,17 @@ class _ResolveConcludePageState extends State<ResolveConcludePage> {
         onPressed: () {
           if (_beforePictures.isNotEmpty &&
               _afterPictures.isNotEmpty &&
-              _signPicture != null) {
-            widget.nextCallback(_beforePictures, _afterPictures, _signPicture!,
-                _measureCtrl.text.trim(), _concludeCtrl.text.trim());
+              _electricitySign != null &&
+              _regionSign != null &&
+              _relatedSign != null) {
+            widget.nextCallback(
+                _beforePictures,
+                _afterPictures,
+                _relatedSign!,
+                _regionSign!,
+                _electricitySign!,
+                _measureCtrl.text.trim(),
+                _concludeCtrl.text.trim());
           }
         },
         label: 'Tiếp tục',
@@ -179,22 +219,70 @@ class _ResolveConcludePageState extends State<ResolveConcludePage> {
     );
   }
 
-  Widget _signImage() {
+  Widget _relatedSignImage() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Ảnh xác nhận chữ ký: ',
+          'Đại diện gây ra sự cố: ',
           style: body.copyWith(fontSize: 16.sp, fontWeight: FontWeight.w600),
         ),
         SizedBox(
           height: 16.h,
         ),
-        _aPictureContainer(),
+        _aPictureContainer(ConcludePictures.RELATED_SIGN, _relatedSign),
         SizedBox(
           height: 8.h,
         ),
-        if (_signPicture == null)
+        if (_relatedSign == null)
+          Text(
+            'Thiếu ảnh',
+            style: body.copyWith(fontSize: 11.sp, color: Colors.red),
+          ),
+      ],
+    );
+  }
+
+  Widget _regionSignImage() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Đại diện địa phương: ',
+          style: body.copyWith(fontSize: 16.sp, fontWeight: FontWeight.w600),
+        ),
+        SizedBox(
+          height: 16.h,
+        ),
+        _aPictureContainer(ConcludePictures.REGION_SIGN, _regionSign),
+        SizedBox(
+          height: 8.h,
+        ),
+        if (_relatedSign == null)
+          Text(
+            'Thiếu ảnh',
+            style: body.copyWith(fontSize: 11.sp, color: Colors.red),
+          ),
+      ],
+    );
+  }
+
+  Widget _electricitySignImage() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Đại diện quản lý vận hành: ',
+          style: body.copyWith(fontSize: 16.sp, fontWeight: FontWeight.w600),
+        ),
+        SizedBox(
+          height: 16.h,
+        ),
+        _aPictureContainer(ConcludePictures.ELECTRICITY_SIGN, _electricitySign),
+        SizedBox(
+          height: 8.h,
+        ),
+        if (_relatedSign == null)
           Text(
             'Thiếu ảnh',
             style: body.copyWith(fontSize: 11.sp, color: Colors.red),
@@ -238,12 +326,12 @@ class _ResolveConcludePageState extends State<ResolveConcludePage> {
     );
   }
 
-  Widget _aPictureContainer() {
-    if (_signPicture == null) {
-      return _pictureEmptyContainer(ConcludePictures.SIGN);
+  Widget _aPictureContainer(ConcludePictures type, Uint8List? image) {
+    if (image == null) {
+      return _pictureEmptyContainer(type);
     }
 
-    return _containerHasPicture(_signPicture!);
+    return _containerHasPicture(image);
   }
 
   Widget _picturesContainer(ConcludePictures type) {

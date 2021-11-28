@@ -1,12 +1,12 @@
 import 'dart:typed_data';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:electricity_manager/models/resolve_report_model.dart';
 import 'package:electricity_manager/screens/components/hero_photo_view_screen.dart';
 import 'package:electricity_manager/screens/components/layout_have_floating_button.dart';
 import 'package:electricity_manager/utils/commons/text_styles.dart';
 import 'package:electricity_manager/utils/enums/detail_view_enum.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter/material.dart';
 
 class ResolveReportDetailLayout extends StatelessWidget {
   const ResolveReportDetailLayout(
@@ -32,7 +32,11 @@ class ResolveReportDetailLayout extends StatelessWidget {
           _dividerWidget(),
           _conclude(context),
           _dividerWidget(),
-          _signWidget(context),
+          _relatedSignWidget(context),
+          _dividerWidget(),
+          _regionSignWidget(context),
+          _dividerWidget(),
+          _electricitySignWidget(context),
         ],
       ),
     );
@@ -66,7 +70,7 @@ class ResolveReportDetailLayout extends StatelessWidget {
         SizedBox(
           height: 8.w,
         ),
-        _labelValueText('Ngày lập biên bản: ', reportModel.createAtString()),
+        _labelValueText('Ngày lập biên bản: ', reportModel.createAtString),
         _labelValueText('Tên sự cố: ', reportModel.resolveName),
         _labelValueText('Địa chỉ: ', reportModel.resolveAddress),
       ],
@@ -162,8 +166,7 @@ class ResolveReportDetailLayout extends StatelessWidget {
         SizedBox(
           height: 8.w,
         ),
-        _deviceItem('STT', 'Tên vật tư', 'SL', 'Tình trạng',
-            'Thu/Lắp', true),
+        _deviceItem('STT', 'Tên vật tư', 'SL', 'Tình trạng', 'Thu/Lắp', true),
         if (reportModel.devices != null)
           Column(
             children: List.generate(
@@ -285,7 +288,7 @@ class ResolveReportDetailLayout extends StatelessWidget {
     );
   }
 
-  Widget _signWidget(BuildContext context) {
+  Widget _relatedSignWidget(BuildContext context) {
     final titleStyle = TextStyle(
         fontWeight: FontWeight.bold, fontSize: 20.sp, color: Colors.blue[600]);
 
@@ -293,7 +296,7 @@ class ResolveReportDetailLayout extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'CHỮ KÝ',
+          'ĐẠI DIỆN GÂY RA SỰ CỐ',
           style: titleStyle,
         ),
         SizedBox(
@@ -301,8 +304,52 @@ class ResolveReportDetailLayout extends StatelessWidget {
         ),
         _containerHasPicture(
             context: context,
-            url: reportModel.signImageURL,
-            image: reportModel.signImage)
+            url: reportModel.relatedUnitSignURL,
+            image: reportModel.relatedUnitSign)
+      ],
+    );
+  }
+
+  Widget _regionSignWidget(BuildContext context) {
+    final titleStyle = TextStyle(
+        fontWeight: FontWeight.bold, fontSize: 20.sp, color: Colors.blue[600]);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'ĐẠI DIỆN CHÍNH QUYỀN ĐỊA PHƯƠNG',
+          style: titleStyle,
+        ),
+        SizedBox(
+          height: 8.w,
+        ),
+        _containerHasPicture(
+            context: context,
+            url: reportModel.regionUnitSignURL,
+            image: reportModel.regionUnitSign)
+      ],
+    );
+  }
+
+  Widget _electricitySignWidget(BuildContext context) {
+    final titleStyle = TextStyle(
+        fontWeight: FontWeight.bold, fontSize: 20.sp, color: Colors.blue[600]);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'ĐẠI DIỆN QUẢN LÝ VẬN HÀNH',
+          style: titleStyle,
+        ),
+        SizedBox(
+          height: 8.w,
+        ),
+        _containerHasPicture(
+            context: context,
+            url: reportModel.electricityUnitSignURL,
+            image: reportModel.electricityUnitSign)
       ],
     );
   }
@@ -321,8 +368,8 @@ class ResolveReportDetailLayout extends StatelessWidget {
 
   Widget _labelValueText(String? label, [String? value]) {
     final labelStyle = body.copyWith(fontSize: 16.sp);
-    final valueStyle = labelStyle.copyWith(
-        fontWeight: FontWeight.w600, color: Colors.black);
+    final valueStyle =
+        labelStyle.copyWith(fontWeight: FontWeight.w600, color: Colors.black);
 
     return RichText(
         text: TextSpan(

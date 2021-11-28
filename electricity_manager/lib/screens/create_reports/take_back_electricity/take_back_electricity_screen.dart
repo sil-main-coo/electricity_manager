@@ -118,10 +118,12 @@ class _TakeBackElectricityScreenState extends State<TakeBackElectricityScreen> {
                   backCallback: _backStep,
                 ),
                 AdditionalPage(
-                  nextCallback: (customerSignImage, staffSignImage) {
+                  nextCallback:
+                      (staffSignImage, managerSignImage, presidentSignImage) {
                     _takeBackReportModel.setAdditional(
-                        customerSignImage: customerSignImage,
-                        staffSignImage: staffSignImage);
+                        staffSignImage: staffSignImage,
+                        managerSignImage: managerSignImage,
+                        presidentSignImage: presidentSignImage);
                     _finishStep();
                   },
                   backCallback: _backStep,

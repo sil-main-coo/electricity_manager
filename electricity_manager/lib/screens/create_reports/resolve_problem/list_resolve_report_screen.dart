@@ -113,7 +113,7 @@ class _ListResolveReportScreenState extends State<ListResolveReportScreen> {
           ])),
         ],
       ),
-      subtitle: Text('Ngày: ${data.createAtString()}'),
+      subtitle: Text('Ngày: ${data.createAtString}'),
     );
   }
 }

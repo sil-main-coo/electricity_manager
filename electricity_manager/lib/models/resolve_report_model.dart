@@ -13,6 +13,8 @@ class ResolveReportModel {
   List<UserProfile>? electricityUnits;
   List<UserProfile>? regionUnits;
   List<UserProfile>? relatedUnits;
+  String? electricityUnitSignURL, regionUnitSignURL, relatedUnitSignURL;
+  Uint8List? electricityUnitSign, regionUnitSign, relatedUnitSign;
 
   // resolve info
   String? happening;
@@ -27,14 +29,17 @@ class ResolveReportModel {
   List<String>? finishedImageURLs;
   String? resolveMeasure;
   String? conclude;
-  String? signImageURL;
+
   String? urlWord;
 
-  int createAt = DateTime.now().millisecondsSinceEpoch;
-  int updateAt = DateTime.now().millisecondsSinceEpoch;
+  DateTime? createAt;
+  DateTime? updateAt;
 
   List<Uint8List>? beforeImages, finishedImages;
-  Uint8List? signImage;
+
+  String get createAtString => _createAtString(createAt);
+
+  String get updateAtString => _createAtString(updateAt);
 
   int deviceTotal() {
     int count = 0;
@@ -45,9 +50,8 @@ class ResolveReportModel {
     return count;
   }
 
-  String createAtString() {
-    final date = DateTime.fromMillisecondsSinceEpoch(createAt);
-
+  String _createAtString(DateTime? date) {
+    if (date == null) return '';
     return '${date.day < 10 ? '0${date.day}' : date.day}/${date.month < 10 ? '0${date.month}' : date.month}/${date.year}';
   }
 
@@ -78,6 +82,8 @@ class ResolveReportModel {
     this.electricityUnits = electricityUnits;
     this.regionUnits = regionUnits;
     this.relatedUnits = relatedUnits;
+    this.createAt = DateTime.now();
+    this.updateAt = DateTime.now();
   }
 
   void setResolveInfo(
@@ -96,14 +102,18 @@ class ResolveReportModel {
   void setConcludeInfo(
       {required List<Uint8List> beforeImages,
       required List<Uint8List> finishedImages,
-      required Uint8List signImage,
+      required Uint8List electricityUnitSign,
+      required Uint8List regionUnitSign,
+      required Uint8List relatedUnitSign,
       required String resolveMeasure,
       required String conclude}) {
     this.beforeImages = beforeImages;
     this.finishedImages = finishedImages;
     this.resolveMeasure = resolveMeasure;
     this.conclude = conclude;
-    this.signImage = signImage;
+    this.electricityUnitSign = electricityUnitSign;
+    this.relatedUnitSign = relatedUnitSign;
+    this.regionUnitSign = regionUnitSign;
   }
 
   ResolveReportModel.fromJson(String id, Map<String, dynamic> json) {
@@ -115,7 +125,9 @@ class ResolveReportModel {
     conclude = json['conclude'];
     happening = json['happening'];
     scene = json['scene'];
-    signImageURL = json['signImageURL'];
+    electricityUnitSignURL = json['electricityUnitSignURL'];
+    regionUnitSignURL = json['regionUnitSignURL'];
+    relatedUnitSignURL = json['relatedUnitSignURL'];
     urlWord = json['urlWord'];
     if (json['beforeImageURLs'] != null) {
       beforeImageURLs = [];
@@ -155,13 +167,19 @@ class ResolveReportModel {
         relatedUnits?.add(new UserProfile.fromJson(Map.from(v)));
       });
     }
+    if (json['createAt'] != null)
+      createAt = DateTime.fromMillisecondsSinceEpoch(json['createAt']);
+    if (json['updateAt'] != null)
+      updateAt = DateTime.fromMillisecondsSinceEpoch(json['updateAt']);
   }
 
   Map<String, dynamic> toImagesJson() {
     return {
       'beforeImageURLs': beforeImageURLs,
       'finishedImageURLs': finishedImageURLs,
-      'signImageURL': signImageURL
+      'electricityUnitSignURL': electricityUnitSignURL,
+      'regionUnitSignURL': regionUnitSignURL,
+      'relatedUnitSignURL': relatedUnitSignURL
     };
   }
 
@@ -289,7 +307,11 @@ class ResolveReportModel {
     data['scene'] = this.scene;
     data['beforeImageURLs'] = this.beforeImageURLs;
     data['finishedImageURLs'] = this.finishedImageURLs;
-    data['signImageURL'] = this.signImageURL;
+    data['electricityUnitSignURL'] = this.electricityUnitSignURL;
+    data['regionUnitSignURL'] = this.regionUnitSignURL;
+    data['relatedUnitSignURL'] = this.relatedUnitSignURL;
+    data['createAt'] = this.createAt?.millisecondsSinceEpoch;
+    data['updateAt'] = this.updateAt?.millisecondsSinceEpoch;
     if (this.devices != null) {
       data['devices'] = this.devices?.map((v) => v.toJson()).toList();
     }

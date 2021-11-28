@@ -43,27 +43,35 @@ class _ConfirmTakeBackScreenState extends State<ConfirmTakeBackScreen> {
   }
 
   Future _addNewReport() async {
-    LoadingDialog.show(context);
     try {
+      LoadingDialog.show(context);
       await _createWordFile();
       final newModel =
           await _reportProvider.addNewReportToDB(widget.reportModel);
       if (newModel != null) {
-        final customerSignImageURL = await _reportProvider.uploadImageToStorage(
-            newModel.id!,
-            TakeBackReportRemoteProvider.signPath,
-            TakeBackReportRemoteProvider.customerSignFileName,
-            newModel.customerSignImage!);
-
         final staffSignImageURL = await _reportProvider.uploadImageToStorage(
             newModel.id!,
             TakeBackReportRemoteProvider.signPath,
             TakeBackReportRemoteProvider.staffSignFileName,
             newModel.staffSignImage!);
+        final managerSignImageURL = await _reportProvider.uploadImageToStorage(
+            newModel.id!,
+            TakeBackReportRemoteProvider.signPath,
+            TakeBackReportRemoteProvider.managerSignFileName,
+            newModel.managerSignImage!);
+        final presidentSignImageURL =
+            await _reportProvider.uploadImageToStorage(
+                newModel.id!,
+                TakeBackReportRemoteProvider.signPath,
+                TakeBackReportRemoteProvider.presidentSignFileName,
+                newModel.presidentSignImage!);
 
-        if (customerSignImageURL != null && staffSignImageURL != null) {
+        if (managerSignImageURL != null &&
+            staffSignImageURL != null &&
+            presidentSignImageURL != null) {
           newModel.urlStaffSignImage = staffSignImageURL;
-          newModel.urlCustomerSignImage = customerSignImageURL;
+          newModel.urlManagerSignImage = managerSignImageURL;
+          newModel.urlPresidentSignImage = presidentSignImageURL;
 
           for (int i = 0; i < newModel.beforeImages!.length; i++) {
             final beforeImageURLs = await _reportProvider.uploadImageToStorage(

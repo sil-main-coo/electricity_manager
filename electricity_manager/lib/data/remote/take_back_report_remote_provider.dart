@@ -15,17 +15,24 @@ class TakeBackReportRemoteProvider {
   static const finishedPath = 'hoan-thien';
   static const takeBackTemplateFile = 'mau-thu-hoi.docx';
 
+  static const excelNamePrefix = 'thong-ke-thu-hoi';
+
   static const signPath = 'chu-ky';
-  static const customerSignFileName = 'chu-ky-khach.jpg';
   static const staffSignFileName = 'chu-ky-nhan-vien.jpg';
+  static const managerSignFileName = 'chu-ky-truong-phong.jpg';
+  static const presidentSignFileName = 'chu-ky-giam-doc.jpg';
 
   final refReportsDB =
       FirebaseDatabase.instance.reference().child('takeBackReports');
+
   final _refReportStorage = FirebaseStorage.instance
       .ref()
       .child('tai-lieu')
       .child('bien-ban')
       .child('thu-hoi');
+  final _refMonthChartStorage =
+      FirebaseStorage.instance.ref().child('tai-lieu').child('thong-ke');
+
   final _refTemplateReportStorage =
       FirebaseStorage.instance.ref().child('tai-lieu').child('mau-bien-ban');
   final _refImageStorage =
@@ -36,6 +43,46 @@ class TakeBackReportRemoteProvider {
 
   Stream<Event> streamData() {
     return refReportsDB.onValue;
+  }
+
+  Future<Map<int, List<TakeBackReportModel>>> getReportsInYear(int year) async {
+    Map<int, List<TakeBackReportModel>> result = {};
+    for (int i = 0; i < 12; i++) {
+      result[i] = [];
+    }
+    final reportsInYear = await getReportWithRangeDate(
+        DateTime(year, 1, 1), DateTime(year + 1, 1, 1));
+
+    reportsInYear.forEach((report) {
+      if (report.createAt != null) {
+        result[report.createAt!.month - 1]?.insert(0, report);
+      }
+    });
+    return result;
+  }
+
+  Future<List<TakeBackReportModel>> getReportWithRangeDate(
+      DateTime start, DateTime end) async {
+    List<TakeBackReportModel> result = [];
+
+    try {
+      final reports = await refReportsDB
+          .orderByChild('createAt')
+          .startAt(start.millisecondsSinceEpoch)
+          .endAt(end.millisecondsSinceEpoch)
+          .once();
+      if (reports.exists) {
+        final Map mapReports = reports.value;
+
+        mapReports.forEach((key, value) {
+          result.add(
+              TakeBackReportModel.fromJson(key.toString(), Map.from(value)));
+        });
+      }
+    } catch (e) {
+      print(e);
+    }
+    return result;
   }
 
   Future<TakeBackReportModel?> addNewReportToDB(
@@ -103,14 +150,29 @@ class TakeBackReportRemoteProvider {
         request.fields['table'] = json.encode(reportModel.toTableWordJson());
         request.fields['table_position'] = '0';
 
+        request.files.add(new http.MultipartFile.fromBytes(
+            'image1', reportModel.staffSignImage!,
+            filename: staffSignFileName));
+        request.fields['label1'] = 'Chữ ký nhân viên';
+
+        request.files.add(new http.MultipartFile.fromBytes(
+            'image2', reportModel.managerSignImage!,
+            filename: managerSignFileName));
+        request.fields['label2'] = 'Chữ ký trưởng phòng';
+
+        request.files.add(new http.MultipartFile.fromBytes(
+            'image3', reportModel.presidentSignImage!,
+            filename: presidentSignFileName));
+        request.fields['label3'] = 'Chữ ký giám đốc';
+
         final streamedResponse = await request.send();
 
         var response = await http.Response.fromStream(streamedResponse);
         var bytes = response.bodyBytes;
         String dir = (await getExternalStorageDirectories())![0].path;
 
-        File resultFile =
-            new File('$dir/$reportNamePrefix-${reportModel.id??'preview'}.docx');
+        File resultFile = new File(
+            '$dir/$reportNamePrefix-${reportModel.id ?? 'preview'}.docx');
         await resultFile.writeAsBytes(bytes);
         return resultFile;
       } else {
@@ -140,9 +202,28 @@ class TakeBackReportRemoteProvider {
     return null;
   }
 
+  /// upload *.xlsx file to storage
+  Future<String?> uploadExcelToStorage(
+      DateTime dateTime, Uint8List file) async {
+    final year = dateTime.year.toString();
+    final month = dateTime.month.toString();
+
+    final parentRef = _refMonthChartStorage
+        .child(year)
+        .child(month)
+        .child('$excelNamePrefix-$month-$year.xlsx');
+    try {
+      final uploadTask = await parentRef.putData(file);
+
+      return uploadTask.ref.getDownloadURL();
+    } catch (e) {
+      print(e);
+    }
+    return null;
+  }
+
   /// upload *.docx file to storage
-  Future<String?> uploadDocToStorage(
-      String reportID, Uint8List file) async {
+  Future<String?> uploadDocToStorage(String reportID, Uint8List file) async {
     final parentRef = _refReportStorage
         .child(reportID)
         .child('$reportNamePrefix-$reportID.docx');

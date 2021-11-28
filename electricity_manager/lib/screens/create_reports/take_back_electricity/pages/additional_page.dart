@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:electricity_manager/app_bloc/app_bloc.dart';
 import 'package:electricity_manager/di/locator.dart';
 import 'package:electricity_manager/screens/components/floating_button_widget.dart';
 import 'package:electricity_manager/screens/components/layout_have_floating_button.dart';
@@ -8,14 +9,14 @@ import 'package:electricity_manager/utils/helpers/image_picker_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-enum AdditionalPictures { SIGN_CUSTOMER, SIGN_STAFF }
+enum AdditionalPictures { SIGN_MANAGER, SIGN_STAFF, SIGN_PRESIDENT }
 
 class AdditionalPage extends StatefulWidget {
   const AdditionalPage(
       {Key? key, required this.nextCallback, required this.backCallback})
       : super(key: key);
 
-  final Function(Uint8List, Uint8List) nextCallback;
+  final Function(Uint8List, Uint8List, Uint8List) nextCallback;
   final Function backCallback;
 
   @override
@@ -24,17 +25,26 @@ class AdditionalPage extends StatefulWidget {
 
 class _AdditionalPageState extends State<AdditionalPage> {
   final _picker = getIt.get<ImagePickerHelper>();
+  final _appBloc = getIt.get<AppBloc>();
 
-  Uint8List? _signCustomerPicture, _signStaffPicture;
+  Uint8List? _signManagerPicture, _signStaffPicture, _signPresidentPicture;
 
   void _cameraCallback(AdditionalPictures additionalPictures) async {
     final xfile = await _picker.imgFromCamera();
     if (xfile != null) {
       final picture = await xfile.readAsBytes();
       setState(() {
-        additionalPictures == AdditionalPictures.SIGN_CUSTOMER
-            ? _signCustomerPicture = picture
-            : _signStaffPicture = picture;
+        switch (additionalPictures) {
+          case AdditionalPictures.SIGN_STAFF:
+            _signStaffPicture = picture;
+            break;
+          case AdditionalPictures.SIGN_MANAGER:
+            _signManagerPicture = picture;
+            break;
+          case AdditionalPictures.SIGN_PRESIDENT:
+            _signPresidentPicture = picture;
+            break;
+        }
       });
     }
   }
@@ -44,17 +54,32 @@ class _AdditionalPageState extends State<AdditionalPage> {
     if (xfile != null) {
       final picture = await xfile.readAsBytes();
       setState(() {
-        additionalPictures == AdditionalPictures.SIGN_CUSTOMER
-            ? _signCustomerPicture = picture
-            : _signStaffPicture = picture;
+        switch (additionalPictures) {
+          case AdditionalPictures.SIGN_STAFF:
+            _signStaffPicture = picture;
+            break;
+          case AdditionalPictures.SIGN_MANAGER:
+            _signManagerPicture = picture;
+            break;
+          case AdditionalPictures.SIGN_PRESIDENT:
+            _signPresidentPicture = picture;
+            break;
+        }
       });
     }
   }
 
   void _next() {
-    if (_signCustomerPicture != null && _signStaffPicture != null) {
-      widget.nextCallback(_signCustomerPicture!, _signStaffPicture!);
+    if (_signManagerPicture != null && _signStaffPicture != null) {
+      widget.nextCallback(
+          _signStaffPicture!, _signManagerPicture!, _signPresidentPicture!);
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _signStaffPicture = _appBloc.user?.profile?.signImage;
   }
 
   @override
@@ -94,24 +119,39 @@ class _AdditionalPageState extends State<AdditionalPage> {
   Widget _buildBody() {
     return LayoutHaveFloatingButton(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _pictureContainer(AdditionalPictures.SIGN_CUSTOMER),
+          _pictureContainer(AdditionalPictures.SIGN_STAFF),
           SizedBox(
             height: 24.w,
           ),
-          _pictureContainer(AdditionalPictures.SIGN_STAFF)
+          _pictureContainer(AdditionalPictures.SIGN_MANAGER),
+          SizedBox(
+            height: 24.w,
+          ),
+          _pictureContainer(AdditionalPictures.SIGN_PRESIDENT)
         ],
       ),
     );
   }
 
   Widget _pictureContainer(AdditionalPictures additionalPictures) {
-    final label = additionalPictures == AdditionalPictures.SIGN_CUSTOMER
-        ? 'Ảnh chữ ký khách hàng'
-        : 'Ảnh chữ ký nhân viên';
-    final picture = additionalPictures == AdditionalPictures.SIGN_CUSTOMER
-        ? _signCustomerPicture
-        : _signStaffPicture;
+    String? label;
+    Uint8List? picture;
+    switch (additionalPictures) {
+      case AdditionalPictures.SIGN_STAFF:
+        label = 'Ảnh chữ ký nhân viên';
+        picture = _signStaffPicture;
+        break;
+      case AdditionalPictures.SIGN_MANAGER:
+        label = 'Ảnh chữ ký trưởng phòng';
+        picture = _signManagerPicture;
+        break;
+      case AdditionalPictures.SIGN_PRESIDENT:
+        label = 'Ảnh chữ ký giám đốc';
+        picture = _signPresidentPicture;
+        break;
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'dart:typed_data';
 import 'package:electricity_manager/utils/commons/role_constants.dart';
 
 class User {
@@ -52,7 +52,8 @@ class User {
 }
 
 class UserProfile {
-  String? id, fullName, role, avatar, phone, roleName;
+  String? id, fullName, role, avatar, phone, roleName, signImageURL;
+  Uint8List? signImage;
 
   String get roleString => RoleConstants.mapRoleToString(roleName);
 
@@ -60,6 +61,7 @@ class UserProfile {
 
   UserProfile(
       {this.id,
+      this.signImageURL,
       this.fullName,
       this.roleName,
       this.role = 'EMPLOYEE',
@@ -69,6 +71,7 @@ class UserProfile {
   factory UserProfile.fromJson(Map<String, dynamic> json, [String? id]) {
     return UserProfile(
         id: id ?? json['id'],
+        signImageURL: json['signImageURL'],
         fullName: json['fullName'],
         roleName: json['roleName'],
         avatar: json['avatar'],
@@ -82,6 +85,12 @@ class UserProfile {
 
   String toRawData() {
     return jsonEncode(this.toJson());
+  }
+
+  Map<String, dynamic> toImagesJson() {
+    return {
+      'signImageURL': signImageURL
+    };
   }
 
   Map<String, dynamic> toJson() {

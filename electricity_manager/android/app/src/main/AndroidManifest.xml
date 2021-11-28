@@ -2,7 +2,7 @@
     package="com.example.electricity_manager">
     <uses-permission android:name="android.permission.INTERNET"/>
    <application
-        android:label="Quản lý đồng hồ điện"
+        android:label="Quản lý điện lực"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

@@ -52,14 +52,28 @@ class _ConfirmResolveScreenState extends State<ConfirmResolveScreen> {
       final newModel =
           await _reportProvider.addNewReportToDB(widget.reportModel);
       if (newModel != null) {
-        final signImageURL = await _reportProvider.uploadImageToStorage(
+        final relatedSignURL = await _reportProvider.uploadImageToStorage(
             newModel.id!,
             ResolveReportRemoteProvider.signPath,
-            ResolveReportRemoteProvider.signName,
-            newModel.signImage!);
+            ResolveReportRemoteProvider.relatedSignName,
+            newModel.relatedUnitSign!);
+        final regionSignURL = await _reportProvider.uploadImageToStorage(
+            newModel.id!,
+            ResolveReportRemoteProvider.signPath,
+            ResolveReportRemoteProvider.regionSignName,
+            newModel.regionUnitSign!);
+        final electricitySignURL = await _reportProvider.uploadImageToStorage(
+            newModel.id!,
+            ResolveReportRemoteProvider.signPath,
+            ResolveReportRemoteProvider.electricitySignName,
+            newModel.electricityUnitSign!);
 
-        if (signImageURL != null) {
-          newModel.signImageURL = signImageURL;
+        if (relatedSignURL != null &&
+            regionSignURL != null &&
+            electricitySignURL != null) {
+          newModel.relatedUnitSignURL = relatedSignURL;
+          newModel.regionUnitSignURL = regionSignURL;
+          newModel.electricityUnitSignURL = electricitySignURL;
 
           for (int i = 0; i < newModel.beforeImages!.length; i++) {
             final beforeImageURLs = await _reportProvider.uploadImageToStorage(

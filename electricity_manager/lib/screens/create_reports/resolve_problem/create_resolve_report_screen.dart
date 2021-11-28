@@ -91,12 +91,14 @@ class _CreateResolveReportScreenState extends State<CreateResolveReportScreen> {
                 ),
                 ResolveConcludePage(
                   backCallback: _backStep,
-                  nextCallback: (beforeImages, finishedImages, signImage,
-                      resolveMeasure, conclude) {
+                  nextCallback: (beforeImages, finishedImages, relatedSign,
+                      regionSign, electricitySign, resolveMeasure, conclude) {
                     _resolveReportModel.setConcludeInfo(
                         beforeImages: beforeImages,
                         finishedImages: finishedImages,
-                        signImage: signImage,
+                        relatedUnitSign: relatedSign,
+                        regionUnitSign: regionSign,
+                        electricityUnitSign: electricitySign,
                         resolveMeasure: resolveMeasure,
                         conclude: conclude);
                     _finishStep();

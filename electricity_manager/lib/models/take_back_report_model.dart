@@ -12,15 +12,18 @@ class TakeBackReportModel {
   String? electricNumber;
   List<String>? urlBeforeImages;
   List<String>? urlFinishedImages;
-  String? urlCustomerSignImage;
+  String? urlManagerSignImage;
+  String? urlPresidentSignImage;
   String? urlStaffSignImage;
   String? urlWord;
-  int createAt = DateTime.now().millisecondsSinceEpoch;
-  int updateAt = DateTime.now().millisecondsSinceEpoch;
+  Uint8List? managerSignImage, staffSignImage, presidentSignImage;
+  List<Uint8List>? beforeImages, finishedImages;
+  DateTime? createAt;
+  DateTime? updateAt;
 
-  DateTime parseDate(int input) {
-    return DateTime.fromMillisecondsSinceEpoch(input);
-  }
+  String get createAtString => _createAtString(createAt);
+
+  String get updateAtString => _createAtString(updateAt);
 
   int deviceTotal() {
     int count = 0;
@@ -31,14 +34,10 @@ class TakeBackReportModel {
     return count;
   }
 
-  String createAtString() {
-    final date = DateTime.fromMillisecondsSinceEpoch(createAt);
-
+  String _createAtString(DateTime? date) {
+    if (date == null) return '';
     return '${date.day < 10 ? '0${date.day}' : date.day}/${date.month < 10 ? '0${date.month}' : date.month}/${date.year}';
   }
-
-  Uint8List? customerSignImage, staffSignImage;
-  List<Uint8List>? beforeImages, finishedImages;
 
   TakeBackReportModel();
 
@@ -65,6 +64,8 @@ class TakeBackReportModel {
     this.clientName = clientName;
     this.clientAddress = clientAddress;
     this.staffs = staffs;
+    this.createAt = DateTime.now();
+    this.updateAt = DateTime.now();
   }
 
   void setElectricityInfo(
@@ -81,10 +82,12 @@ class TakeBackReportModel {
   }
 
   void setAdditional(
-      {required Uint8List customerSignImage,
-      required Uint8List staffSignImage}) {
-    this.customerSignImage = customerSignImage;
+      {required Uint8List managerSignImage,
+      required Uint8List staffSignImage,
+      required Uint8List presidentSignImage}) {
+    this.managerSignImage = managerSignImage;
     this.staffSignImage = staffSignImage;
+    this.presidentSignImage = presidentSignImage;
   }
 
   TakeBackReportModel.fromJson(String id, Map<String, dynamic> json) {
@@ -118,16 +121,21 @@ class TakeBackReportModel {
         urlFinishedImages?.add(picture);
       });
     }
-    urlCustomerSignImage = json['urlCustomerSignImage'];
+
+    urlManagerSignImage = json['urlManagerSignImage'];
     urlStaffSignImage = json['urlStaffSignImage'];
+    urlPresidentSignImage = json['urlPresidentSignImage'];
     urlWord = json['urlWord'];
-    createAt = json['createAt'];
-    updateAt = json['updateAt'];
+    if (json['createAt'] != null)
+      createAt = DateTime.fromMillisecondsSinceEpoch(json['createAt']);
+    if (json['updateAt'] != null)
+      updateAt = DateTime.fromMillisecondsSinceEpoch(json['updateAt']);
   }
 
   Map<String, dynamic> toImagesJson() {
     return {
-      'urlCustomerSignImage': urlCustomerSignImage,
+      'urlPresidentSignImage': urlPresidentSignImage,
+      'urlManagerSignImage': urlManagerSignImage,
       'urlStaffSignImage': urlStaffSignImage,
       'urlBeforeImages': urlBeforeImages,
       'urlFinishedImages': urlFinishedImages
@@ -135,8 +143,6 @@ class TakeBackReportModel {
   }
 
   Map<String, dynamic> toDataWordJson() {
-    final createAtDate = parseDate(this.createAt);
-
     Map<String, dynamic> staffMap = {
       "\$hh": "",
       "\$ii": "",
@@ -173,9 +179,9 @@ class TakeBackReportModel {
       "\$bb": this.clientCode,
       "\$cc": this.electricNumber,
       "\$dd": this.clientAddress,
-      "\$ee": createAtDate.day.toString(),
-      "\$ff": createAtDate.month.toString(),
-      "\$gg": createAtDate.year.toString().substring(2),
+      "\$ee": createAt?.day.toString(),
+      "\$ff": createAt?.month.toString(),
+      "\$gg": createAt?.year.toString().substring(2),
       ...staffMap,
       "\$oo": "",
     };
@@ -192,7 +198,7 @@ class TakeBackReportModel {
           "1": device.name,
           "2": "",
           "3": device.count?.toString() ?? '0',
-          "4": ""
+          "4": device.note ?? ''
         };
       }
       return tableMap;
@@ -219,10 +225,11 @@ class TakeBackReportModel {
     }
     data['urlBeforeImages'] = this.urlFinishedImages;
     data['urlFinishedImages'] = this.urlFinishedImages;
-    data['urlCustomerSignImage'] = this.urlCustomerSignImage;
+    data['urlManagerSignImage'] = this.urlManagerSignImage;
+    data['urlPresidentSignImage'] = this.urlPresidentSignImage;
     data['urlStaffSignImage'] = this.urlStaffSignImage;
-    data['createAt'] = this.createAt;
-    data['updateAt'] = this.updateAt;
+    data['createAt'] = this.createAt?.millisecondsSinceEpoch;
+    data['updateAt'] = this.updateAt?.millisecondsSinceEpoch;
     return data;
   }
 }

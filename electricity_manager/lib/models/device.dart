@@ -3,6 +3,7 @@ class Device {
   String? name;
   int? count = 0;
   int? action = 1; // action : thu hồi; 1: lắp mới
+  String? note;
   String? state;
 
   String get actionString => action == 0 ? 'Thu hồi' : 'Lắp mới';
@@ -15,6 +16,7 @@ class Device {
     count = json['count'];
     action = json['action'];
     state = json['state'];
+    note = json['note'];
   }
 
   Map<String, dynamic> toJson() {
@@ -24,6 +26,7 @@ class Device {
     data['count'] = this.count;
     data['state'] = this.state;
     data['action'] = this.action;
+    data['note'] = this.note;
     return data;
   }
 

@@ -15,9 +15,15 @@ class ResolveReportRemoteProvider {
   static const finishedPath = 'hoan-thien';
   static const takeBackTemplateFile = 'mau-su-co.docx';
 
-  static const signPath = 'chu-ky';
-  static const signName = 'chu-ky.jpg';
+  static const excelNamePrefix = 'thong-ke-xuat-kho';
 
+  static const signPath = 'chu-ky';
+  static const relatedSignName = 'dai-dien-gay-su-co.jpg';
+  static const regionSignName = 'dai-dien-dia-phuong.jpg';
+  static const electricitySignName = 'dai-dien-quan-ly-van-hanh.jpg';
+
+  final _refMonthChartStorage =
+      FirebaseStorage.instance.ref().child('tai-lieu').child('thong-ke');
   final refReportsDB =
       FirebaseDatabase.instance.reference().child('resolveReports');
   final _refReportStorage = FirebaseStorage.instance
@@ -35,6 +41,46 @@ class ResolveReportRemoteProvider {
 
   Stream<Event> streamData() {
     return refReportsDB.onValue;
+  }
+
+  Future<Map<int, List<ResolveReportModel>>> getReportsInYear(int year) async {
+    Map<int, List<ResolveReportModel>> result = {};
+    for (int i = 0; i < 12; i++) {
+      result[i] = [];
+    }
+    final reportsInYear = await getReportWithRangeDate(
+        DateTime(year, 1, 1), DateTime(year + 1, 1, 1));
+
+    reportsInYear.forEach((report) {
+      if (report.createAt != null) {
+        result[report.createAt!.month - 1]?.insert(0, report);
+      }
+    });
+    return result;
+  }
+
+  Future<List<ResolveReportModel>> getReportWithRangeDate(
+      DateTime start, DateTime end) async {
+    List<ResolveReportModel> result = [];
+
+    try {
+      final reports = await refReportsDB
+          .orderByChild('createAt')
+          .startAt(start.millisecondsSinceEpoch)
+          .endAt(end.millisecondsSinceEpoch)
+          .once();
+      if (reports.exists) {
+        final Map mapReports = reports.value;
+
+        mapReports.forEach((key, value) {
+          result.add(
+              ResolveReportModel.fromJson(key.toString(), Map.from(value)));
+        });
+      }
+    } catch (e) {
+      print(e);
+    }
+    return result;
   }
 
   Future<ResolveReportModel?> addNewReportToDB(ResolveReportModel model) async {
@@ -101,6 +147,21 @@ class ResolveReportRemoteProvider {
         request.fields['table'] = json.encode(reportModel.toTableWordJson());
         request.fields['table_position'] = '0';
 
+        request.files.add(new http.MultipartFile.fromBytes(
+            'image1', reportModel.relatedUnitSign!,
+            filename: relatedSignName));
+        request.fields['label1'] = 'Đại diện gây sự cố';
+
+        request.files.add(new http.MultipartFile.fromBytes(
+            'image2', reportModel.regionUnitSign!,
+            filename: regionSignName));
+        request.fields['label2'] = 'Đại diện địa phương';
+
+        request.files.add(new http.MultipartFile.fromBytes(
+            'image3', reportModel.electricityUnitSign!,
+            filename: electricitySignName));
+        request.fields['label3'] = 'Đại diện quản lý vận hành';
+
         final streamedResponse = await request.send();
 
         var response = await http.Response.fromStream(streamedResponse);
@@ -139,9 +200,28 @@ class ResolveReportRemoteProvider {
     return null;
   }
 
+  /// upload *.xlsx file to storage
+  Future<String?> uploadExcelToStorage(
+      DateTime dateTime, Uint8List file) async {
+    final year = dateTime.year.toString();
+    final month = dateTime.month.toString();
+
+    final parentRef = _refMonthChartStorage
+        .child(year)
+        .child(month)
+        .child('$excelNamePrefix-$month-$year.xlsx');
+    try {
+      final uploadTask = await parentRef.putData(file);
+
+      return uploadTask.ref.getDownloadURL();
+    } catch (e) {
+      print(e);
+    }
+    return null;
+  }
+
   /// upload *.docx file to storage
-  Future<String?> uploadDocToStorage(
-      String reportID, Uint8List file) async {
+  Future<String?> uploadDocToStorage(String reportID, Uint8List file) async {
     final parentRef = _refReportStorage
         .child(reportID)
         .child('$reportNamePrefix-$reportID.docx');
