@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:electricity_manager/utils/commons/urls.dart';
+import 'package:electricity_manager/utils/utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:electricity_manager/models/take_back_report_model.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -125,7 +126,7 @@ class TakeBackReportRemoteProvider {
       var response = await request.close();
       if (response.statusCode == 200) {
         var bytes = await consolidateHttpClientResponseBytes(response);
-        String dir = (await getApplicationDocumentsDirectory()).path;
+        String dir = await Utils.getDownloadPath();
         _templateFile = new File('$dir/$takeBackTemplateFile');
         await _templateFile?.writeAsBytes(bytes);
         return _templateFile;
@@ -169,7 +170,7 @@ class TakeBackReportRemoteProvider {
 
         var response = await http.Response.fromStream(streamedResponse);
         var bytes = response.bodyBytes;
-        String dir = (await getExternalStorageDirectories())![0].path;
+        String dir = await Utils.getDownloadPath();
 
         File resultFile = new File(
             '$dir/$reportNamePrefix-${reportModel.id ?? 'preview'}.docx');
@@ -191,7 +192,7 @@ class TakeBackReportRemoteProvider {
 
       if (response.statusCode == 200) {
         var bytes = response.bodyBytes;
-        String dir = (await getExternalStorageDirectories())![0].path;
+        String dir = await Utils.getDownloadPath();
         File resultFile = new File('$dir/$reportNamePrefix-$reportID.docx');
         await resultFile.writeAsBytes(bytes);
         return resultFile;

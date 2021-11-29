@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:electricity_manager/models/resolve_report_model.dart';
 import 'package:electricity_manager/utils/commons/urls.dart';
+import 'package:electricity_manager/utils/utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -122,7 +123,7 @@ class ResolveReportRemoteProvider {
       var response = await request.close();
       if (response.statusCode == 200) {
         var bytes = await consolidateHttpClientResponseBytes(response);
-        String dir = (await getApplicationDocumentsDirectory()).path;
+        String dir = await Utils.getDownloadPath();
         _templateFile = new File('$dir/$takeBackTemplateFile');
         await _templateFile?.writeAsBytes(bytes);
         return _templateFile;
@@ -166,7 +167,7 @@ class ResolveReportRemoteProvider {
 
         var response = await http.Response.fromStream(streamedResponse);
         var bytes = response.bodyBytes;
-        String dir = (await getExternalStorageDirectories())![0].path;
+        String dir = await Utils.getDownloadPath();
 
         File resultFile = new File(
             '$dir/$reportNamePrefix-${reportModel.id ?? 'preview'}.docx');
@@ -188,8 +189,7 @@ class ResolveReportRemoteProvider {
 
       if (response.statusCode == 200) {
         var bytes = response.bodyBytes;
-        String dir = (await getExternalStorageDirectories())![0].path;
-        print(dir);
+        String dir = await Utils.getDownloadPath();
         File resultFile = new File('$dir/$reportNamePrefix-$reportID.docx');
         await resultFile.writeAsBytes(bytes);
         return resultFile;
