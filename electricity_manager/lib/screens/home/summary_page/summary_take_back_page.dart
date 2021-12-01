@@ -1,8 +1,12 @@
+import 'dart:typed_data';
+
 import 'package:electricity_manager/data/remote/take_back_report_remote_provider.dart';
 import 'package:electricity_manager/di/locator.dart';
 import 'package:electricity_manager/models/take_back_report_model.dart';
 import 'package:electricity_manager/screens/components/app_button.dart';
 import 'package:electricity_manager/screens/components/app_button_icon.dart';
+import 'package:electricity_manager/screens/components/dialogs/loading_dialog.dart';
+import 'package:electricity_manager/screens/components/failure_dialog.dart';
 import 'package:electricity_manager/screens/create_reports/take_back_electricity/detail_take_back_report_screen.dart';
 import 'package:electricity_manager/screens/home/summary_page/widgets/bar_chart_sample2.dart';
 import 'package:electricity_manager/utils/commons/text_styles.dart';
@@ -62,63 +66,72 @@ class _SummaryTakeBackPageState extends State<SummaryTakeBackPage> {
   Future<void> _generateExcel(
       DateTime date, List<TakeBackReportModel> reports) async {
     //Create a Excel document.
+    try {
+      LoadingDialog.show(context);
+      //Creating a workbook.
+      final xls.Workbook workbook = xls.Workbook();
+      //Accessing via index
+      final xls.Worksheet sheet = workbook.worksheets[0];
+      sheet.showGridlines = true;
 
-    //Creating a workbook.
-    final xls.Workbook workbook = xls.Workbook();
-    //Accessing via index
-    final xls.Worksheet sheet = workbook.worksheets[0];
-    sheet.showGridlines = true;
+      // Enable calculation for worksheet.
+      sheet.enableSheetCalculations();
 
-    // Enable calculation for worksheet.
-    sheet.enableSheetCalculations();
+      //Set data in the worksheet.
+      sheet.getRangeByName('B2:H4').merge();
 
-    //Set data in the worksheet.
-    sheet.getRangeByName('B2:H4').merge();
+      sheet.getRangeByName('B2').setText(
+          'Bảng kê vật tư thu hồi ${Utils.dateToMonthAndYearString(date)}'
+              .toUpperCase());
+      sheet.getRangeByName('B2').cellStyle.fontSize = 22;
+      sheet.getRangeByName('B2').cellStyle.hAlign = xls.HAlignType.center;
+      sheet.getRangeByName('B2').cellStyle.vAlign = xls.VAlignType.center;
 
-    sheet.getRangeByName('B2').setText(
-        'Bảng kê vật tư thu hồi ${Utils.dateToMonthAndYearString(date)}'
-            .toUpperCase());
-    sheet.getRangeByName('B2').cellStyle.fontSize = 22;
-    sheet.getRangeByName('B2').cellStyle.hAlign = xls.HAlignType.center;
-    sheet.getRangeByName('B2').cellStyle.vAlign = xls.VAlignType.center;
+      sheet.getRangeByName('B5:H5').cellStyle.bold = true;
+      sheet.getRangeByIndex(5, 2).setText('STT');
+      sheet.getRangeByIndex(5, 3).setText('Thời gian');
+      sheet.getRangeByIndex(5, 4).setText('Tên khách hàng');
+      sheet.getRangeByIndex(5, 5).setText('Địa chỉ');
+      sheet.getRangeByIndex(5, 6).setText('Tên vật tư');
+      sheet.getRangeByIndex(5, 7).setText('Số lượng');
+      sheet.getRangeByIndex(5, 8).setText('Ghi chú');
 
-    sheet.getRangeByName('B5:H5').cellStyle.bold = true;
-    sheet.getRangeByIndex(5, 2).setText('STT');
-    sheet.getRangeByIndex(5, 3).setText('Thời gian');
-    sheet.getRangeByIndex(5, 4).setText('Tên khách hàng');
-    sheet.getRangeByIndex(5, 5).setText('Địa chỉ');
-    sheet.getRangeByIndex(5, 6).setText('Tên vật tư');
-    sheet.getRangeByIndex(5, 7).setText('Số lượng');
-    sheet.getRangeByIndex(5, 8).setText('Ghi chú');
+      int stt = 1;
+      int row = 6;
 
-    int stt = 1;
-    int row = 6;
-
-    reports.forEach((rp) {
-      if (rp.devices != null) {
-        print(rp.devices!.length);
-        for (int i = 0; i < rp.devices!.length; i++) {
-          final device = rp.devices![i];
-          sheet.getRangeByIndex(row, 2).setText('$stt'); // stt
-          sheet.getRangeByIndex(row, 3).setText(rp.createAtString); // time
-          sheet.getRangeByIndex(row, 4).setText(rp.clientName); // full name
-          sheet.getRangeByIndex(row, 5).setText(rp.clientAddress); // address
-          sheet.getRangeByIndex(row, 6).setText(device.name); // name
-          sheet.getRangeByIndex(row, 7).setText(device.count.toString()); // sl
-          sheet.getRangeByIndex(row, 8).setText(device.note); // note
-          row++;
-          stt++;
+      reports.forEach((rp) {
+        if (rp.devices != null) {
+          print(rp.devices!.length);
+          for (int i = 0; i < rp.devices!.length; i++) {
+            final device = rp.devices![i];
+            sheet.getRangeByIndex(row, 2).setText('$stt'); // stt
+            sheet.getRangeByIndex(row, 3).setText(rp.createAtString); // time
+            sheet.getRangeByIndex(row, 4).setText(rp.clientName); // full name
+            sheet.getRangeByIndex(row, 5).setText(rp.clientAddress); // address
+            sheet.getRangeByIndex(row, 6).setText(device.name); // name
+            sheet
+                .getRangeByIndex(row, 7)
+                .setText(device.count.toString()); // sl
+            sheet.getRangeByIndex(row, 8).setText(device.note); // note
+            row++;
+            stt++;
+          }
         }
-      }
-    });
+      });
 
-    //Save and launch the excel.
-    final List<int> bytes = workbook.saveAsStream();
-    //Dispose the document.
-    workbook.dispose();
-
-    //Save and launch the file.
-    await Utils.saveAndLaunchFile(bytes, 'thu-hoi-thang-${date.month}.xlsx');
+      //Save and launch the excel.
+      final List<int> bytes = workbook.saveAsStream();
+      //Dispose the document.
+      workbook.dispose();
+      await _reportsDB.uploadExcelToStorage(date, Uint8List.fromList(bytes));
+      LoadingDialog.hide(context);
+      //Save and launch the file.
+      await Utils.saveAndLaunchFile(bytes, 'thu-hoi-thang-${date.month}.xlsx');
+    } catch (e) {
+      print(e);
+      LoadingDialog.hide(context);
+      FailureDialog.show(context, 'Đã xảy ra lỗi');
+    }
   }
 
   @override

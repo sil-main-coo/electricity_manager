@@ -230,6 +230,7 @@ class _ResoleBasicInfoPageState extends State<ResoleBasicInfoPage> {
             ctrl2: _regionUnitRole1Ctrl,
             fcNode1: _regionUnit1Node,
             fcNode2: _regionUnitRole1Node,
+            isRequired: false,
             nextFC: _regionUnit2Node),
         _personFieldWidget(
             isRequired: false,

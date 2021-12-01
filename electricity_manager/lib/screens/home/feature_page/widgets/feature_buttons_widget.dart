@@ -4,6 +4,7 @@ import 'package:electricity_manager/screens/components/grid_item_button.dart';
 import 'package:electricity_manager/screens/create_reports/resolve_problem/list_resolve_report_screen.dart';
 import 'package:electricity_manager/screens/create_reports/take_back_electricity/list_take_back_report_screen.dart';
 import 'package:electricity_manager/screens/manager_account/manager_account_screen.dart';
+import 'package:electricity_manager/screens/manager_device/manager_device_screen.dart';
 import 'package:electricity_manager/utils/commons/icon_constants.dart';
 import 'package:flutter/material.dart';
 
@@ -19,6 +20,12 @@ class FeatureButtonsWidget extends StatelessWidget {
                   MaterialPageRoute(builder: (_) => ManagerAccountScreen())),
               iconPath: IconConstants.icStaffs,
               label: "Quản lý tài khoản",
+            ),
+            GridItemButton(
+              onTap: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => ManagerDeviceScreen())),
+              iconPath: IconConstants.icDevice,
+              label: "Quản lý vật tư",
             )
           ]
         : [
