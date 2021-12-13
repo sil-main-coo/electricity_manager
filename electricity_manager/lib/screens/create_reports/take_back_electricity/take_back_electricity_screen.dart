@@ -100,9 +100,11 @@ class _TakeBackElectricityScreenState extends State<TakeBackElectricityScreen> {
                   },
                 ),
                 ElectricityInfoPage(
-                  nextCallback: (electricNumber, beforeImages, finishedImages) {
+                  nextCallback: (outputElectric, hangingElectric, beforeImages,
+                      finishedImages) {
                     _takeBackReportModel.setElectricityInfo(
-                        electricNumber: electricNumber,
+                        outputElectric: outputElectric,
+                        hangingElectric: hangingElectric,
                         beforeImages: beforeImages,
                         finishedImages: finishedImages);
                     _nextStep();

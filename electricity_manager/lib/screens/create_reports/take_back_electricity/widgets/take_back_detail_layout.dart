@@ -92,13 +92,36 @@ class TakeBackDetailLayout extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'CÔNG TƠ',
+          'CÔNG TƠ THÁO',
           style: titleStyle,
         ),
         SizedBox(
           height: 8.w,
         ),
-        _labelValueText('Số công tơ: ', reportModel.electricNumber),
+        _labelValueText(
+            'Số công tơ: ', reportModel.outputElectric?.electricCode ?? ''),
+        SizedBox(
+          height: 4.w,
+        ),
+        _labelValueText('Chỉ số công tơ: ',
+            reportModel.outputElectric?.electricValue ?? ''),
+        SizedBox(
+          height: 16.w,
+        ),
+        Text(
+          'CÔNG TƠ TREO',
+          style: titleStyle,
+        ),
+        SizedBox(
+          height: 8.w,
+        ),
+        _labelValueText(
+            'Số công tơ: ', reportModel.hangingElectric?.electricCode ?? ''),
+        SizedBox(
+          height: 4.w,
+        ),
+        _labelValueText('Chỉ số công tơ: ',
+            reportModel.hangingElectric?.electricValue ?? ''),
         SizedBox(
           height: 16.w,
         ),

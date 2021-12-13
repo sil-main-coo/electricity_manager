@@ -33,7 +33,7 @@ class AppErrorPage extends StatelessWidget {
                     Text(mess.toString(), style: Theme
                         .of(context)
                         .primaryTextTheme
-                        .subtitle!
+                        .subtitle2!
                         .copyWith(fontSize: ScreenUtil().setSp(fzSubTitle)),
                     ),
                     SizedBox(height:  ScreenUtil().setHeight(10),),

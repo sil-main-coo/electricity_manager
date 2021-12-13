@@ -28,21 +28,23 @@ class _SummaryPageState extends State<SummaryPage> {
 
   @override
   Widget build(BuildContext context) {
+    print('rebuild');
     return RefreshIndicator(
       onRefresh: () async {
         setState(() {});
       },
       child: SingleChildScrollView(
         padding: EdgeInsets.all(16.w),
-        physics: const BouncingScrollPhysics(),
+        physics: const AlwaysScrollableScrollPhysics(),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildTakeBackBody(),
             Padding(
               padding: EdgeInsets.symmetric(vertical: 16.w),
               child: Divider(),
             ),
-            _exportDevice()
+            _exportDevice(),
           ],
         ),
       ),
@@ -70,6 +72,7 @@ class _SummaryPageState extends State<SummaryPage> {
               });
             }
           });
+          print(takeBackMap);
           return BarChartSample(
             label: 'Vật tư thu hồi/năm',
             data: takeBackMap,

@@ -27,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          _appBloc.isAdmin ? 'Quản trị phần mềm' : 'Quản lý điện lực',
+          _appBloc.isAdmin ? 'Quản trị phần mềm' : 'Quản lý sự cố',
           style: titleWhite.copyWith(fontSize: 22.sp),
         ),
         centerTitle: true,

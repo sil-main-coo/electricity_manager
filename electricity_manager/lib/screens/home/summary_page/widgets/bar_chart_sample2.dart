@@ -27,6 +27,11 @@ class _BarChartSampleState extends State<BarChartSample> {
   @override
   void initState() {
     super.initState();
+
+  }
+
+  @override
+  Widget build(BuildContext context) {
     _inputData = widget.data;
     _inputData.forEach((monthIndex, total) {
       if (_maxY < total) {
@@ -36,21 +41,18 @@ class _BarChartSampleState extends State<BarChartSample> {
 
     _barGroups = List<BarChartGroupData>.generate(
         _inputData.length,
-        (index) => BarChartGroupData(
-              x: index,
-              barRods: [
-                BarChartRodData(
-                    y: _inputData[index] == null
-                        ? 0
-                        : _inputData[index]!.toDouble(),
-                    colors: [Colors.lightBlueAccent, Colors.blue])
-              ],
-              showingTooltipIndicators: [0],
-            ));
-  }
+            (index) => BarChartGroupData(
+          x: index,
+          barRods: [
+            BarChartRodData(
+                y: _inputData[index] == null
+                    ? 0
+                    : _inputData[index]!.toDouble(),
+                colors: [Colors.lightBlueAccent, Colors.blue])
+          ],
+          showingTooltipIndicators: [0],
+        ));
 
-  @override
-  Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

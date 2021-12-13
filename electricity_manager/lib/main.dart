@@ -53,7 +53,7 @@ class MyApp extends StatelessWidget {
             }
           },
           child: MaterialApp(
-            title: 'Quản lý điện lực',
+            title: 'Quản lý sự cố',
             theme: ThemeData(
               primarySwatch: Colors.blue,
             ),

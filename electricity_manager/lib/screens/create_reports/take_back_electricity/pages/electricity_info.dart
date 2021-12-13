@@ -1,12 +1,14 @@
 import 'dart:typed_data';
 
 import 'package:electricity_manager/di/locator.dart';
+import 'package:electricity_manager/models/electricity_model.dart';
 import 'package:electricity_manager/screens/components/app_field.dart';
 import 'package:electricity_manager/screens/components/floating_button_widget.dart';
 import 'package:electricity_manager/screens/components/layout_have_floating_button.dart';
 import 'package:electricity_manager/screens/components/picker_image_bottomsheet.dart';
 import 'package:electricity_manager/utils/commons/text_styles.dart';
 import 'package:electricity_manager/utils/helpers/image_picker_helper.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -17,7 +19,8 @@ class ElectricityInfoPage extends StatefulWidget {
       {Key? key, required this.nextCallback, required this.backCallback})
       : super(key: key);
 
-  final Function(String, List<Uint8List>, List<Uint8List>) nextCallback;
+  final Function(ElectricModel, ElectricModel, List<Uint8List>, List<Uint8List>)
+      nextCallback;
   final Function backCallback;
 
   @override
@@ -25,7 +28,12 @@ class ElectricityInfoPage extends StatefulWidget {
 }
 
 class _ElectricityInfoPageState extends State<ElectricityInfoPage> {
-  final _electricNumberCtrl = TextEditingController();
+  final _electricOutputCodeCtrl = TextEditingController();
+  final _electricOutputValueCtrl = TextEditingController();
+
+  final _electricHangingCodeCtrl = TextEditingController();
+  final _electricHangingValueCtrl = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
 
   final _picker = getIt.get<ImagePickerHelper>();
@@ -63,7 +71,17 @@ class _ElectricityInfoPageState extends State<ElectricityInfoPage> {
         _afterPictures.isNotEmpty) {
       FocusScope.of(context).unfocus();
       widget.nextCallback(
-          _electricNumberCtrl.text.trim(), _beforePictures, _afterPictures);
+          ElectricModel(
+            electricCode: _electricOutputCodeCtrl.text.trim(),
+            electricValue: _electricOutputValueCtrl.text.trim(),
+          ),
+          ElectricModel(
+            electricCode: _electricHangingCodeCtrl.text.trim(),
+            electricValue: _electricHangingValueCtrl.text.trim(),
+          ),
+          _beforePictures,
+          _afterPictures
+      );
     }
   }
 
@@ -108,12 +126,11 @@ class _ElectricityInfoPageState extends State<ElectricityInfoPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AppField(
-              controller: _electricNumberCtrl,
-              label: 'Số công tơ:',
-              textInputAction: TextInputAction.done,
-              hintText: 'Nhập số công tơ',
+            _electricityOutput(),
+            SizedBox(
+              height: 16.w,
             ),
+            _electricityHanging(),
             SizedBox(
               height: 24.w,
             ),
@@ -125,6 +142,64 @@ class _ElectricityInfoPageState extends State<ElectricityInfoPage> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _electricityOutput() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Công tơ tháo'.toUpperCase(),
+          style: Theme.of(context).textTheme.headline6?.copyWith(
+              color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 20.sp),
+        ),
+        AppField(
+          controller: _electricOutputCodeCtrl,
+          label: 'Số công tơ:',
+          keyboardType: TextInputType.number,
+          isRequired: false,
+          textInputAction: TextInputAction.done,
+          hintText: 'Nhập số công tơ',
+        ),
+        AppField(
+          controller: _electricOutputValueCtrl,
+          label: 'Chỉ số:',
+          keyboardType: TextInputType.number,
+          isRequired: false,
+          textInputAction: TextInputAction.done,
+          hintText: 'Nhập chỉ số công tơ',
+        ),
+      ],
+    );
+  }
+
+  Widget _electricityHanging() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Công tơ treo'.toUpperCase(),
+          style: Theme.of(context).textTheme.headline6?.copyWith(
+              color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 20.sp),
+        ),
+        AppField(
+          controller: _electricHangingCodeCtrl,
+          label: 'Số công tơ:',
+          keyboardType: TextInputType.number,
+          textInputAction: TextInputAction.done,
+          isRequired: false,
+          hintText: 'Nhập số công tơ',
+        ),
+        AppField(
+          controller: _electricHangingValueCtrl,
+          label: 'Chỉ số:',
+          isRequired: false,
+          keyboardType: TextInputType.number,
+          textInputAction: TextInputAction.done,
+          hintText: 'Nhập chỉ số công tơ',
+        ),
+      ],
     );
   }
 

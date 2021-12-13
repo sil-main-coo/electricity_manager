@@ -63,7 +63,7 @@ class _SummaryTakeBackPageState extends State<SummaryTakeBackPage> {
     });
   }
 
-  Future<void> _generateExcel(
+  Future<void> _generateDeviceExcel(
       DateTime date, List<TakeBackReportModel> reports) async {
     //Create a Excel document.
     try {
@@ -86,6 +86,7 @@ class _SummaryTakeBackPageState extends State<SummaryTakeBackPage> {
       sheet.getRangeByName('B2').cellStyle.fontSize = 22;
       sheet.getRangeByName('B2').cellStyle.hAlign = xls.HAlignType.center;
       sheet.getRangeByName('B2').cellStyle.vAlign = xls.VAlignType.center;
+      sheet.getRangeByName('B2').cellStyle.bold = true;
 
       sheet.getRangeByName('B5:H5').cellStyle.bold = true;
       sheet.getRangeByIndex(5, 2).setText('STT');
@@ -123,12 +124,111 @@ class _SummaryTakeBackPageState extends State<SummaryTakeBackPage> {
       final List<int> bytes = workbook.saveAsStream();
       //Dispose the document.
       workbook.dispose();
-      await _reportsDB.uploadExcelToStorage(date, Uint8List.fromList(bytes));
+      await _reportsDB.uploadExcelToStorage(
+          TakeBackReportRemoteProvider.excelDeviceNamePrefix,
+          date,
+          Uint8List.fromList(bytes));
       LoadingDialog.hide(context);
       //Save and launch the file.
       await Utils.saveAndLaunchFile(bytes, 'thu-hoi-thang-${date.month}.xlsx');
     } catch (e) {
       print(e);
+      LoadingDialog.hide(context);
+      FailureDialog.show(context, 'Đã xảy ra lỗi');
+    }
+  }
+
+  Future<void> _generateElectricExcel(
+      DateTime date, List<TakeBackReportModel> reports) async {
+    //Create a Excel document.
+    try {
+      LoadingDialog.show(context);
+      //Creating a workbook.
+      final xls.Workbook workbook = xls.Workbook();
+      //Accessing via index
+      final xls.Worksheet sheet = workbook.worksheets[0];
+      sheet.showGridlines = true;
+
+      // Enable calculation for worksheet.
+      sheet.enableSheetCalculations();
+
+      //Set data in the worksheet.
+      sheet.getRangeByName('B2:H4').merge();
+
+      sheet.getRangeByName('B2').setText(
+          'Bảng kê công tơ ${Utils.dateToMonthAndYearString(date)}'
+              .toUpperCase());
+      sheet.getRangeByName('B2').cellStyle.fontSize = 22;
+      sheet.getRangeByName('B2').cellStyle.hAlign = xls.HAlignType.center;
+      sheet.getRangeByName('B2').cellStyle.vAlign = xls.VAlignType.center;
+      sheet.getRangeByName('B2').cellStyle.bold = true;
+
+      int stt = 1;
+      int row = 5;
+
+      reports.forEach((rp) {
+        if (rp.devices != null) {
+          // print(rp.devices!.length);
+          final outputElectric = rp.outputElectric;
+          final hangingElectric = rp.hangingElectric;
+
+          if (outputElectric != null && hangingElectric != null) {
+            sheet.getRangeByIndex(row, 1).setText('$stt'); // stt
+            sheet.getRangeByIndex(row, 2).setText('Thời gian');
+            sheet.getRangeByIndex(row, 2).cellStyle.bold = true;
+            sheet.getRangeByIndex(row, 3).setText(rp.createAtString);
+            sheet.getRangeByIndex(row, 3).cellStyle.bold = true;
+
+            row++;
+            sheet.getRangeByIndex(row, 2).setText('CÔNG TƠ THÁO');
+            sheet.getRangeByIndex(row, 2).cellStyle.bold = true;
+            sheet.getRangeByIndex(row, 3).setText(outputElectric.electricCode);
+            sheet.getRangeByIndex(row, 7).setText('CÔNG TƠ TREO');
+            sheet.getRangeByIndex(row, 7).cellStyle.bold = true;
+            sheet.getRangeByIndex(row, 8).setText(hangingElectric.electricCode);
+
+            row++;
+            sheet.getRangeByIndex(row, 2).setText('Giờ bình thường');
+            sheet.getRangeByIndex(row, 3).setText('Giao');
+            sheet.getRangeByIndex(row, 5).setText('Nhận');
+            sheet.getRangeByIndex(row, 7).setText('Giờ bình thường');
+            sheet.getRangeByIndex(row, 8).setText('Giao');
+            sheet.getRangeByIndex(row, 10).setText('Nhận');
+
+            row++;
+            sheet.getRangeByIndex(row, 2).setText('Giờ cao điểm');
+            sheet.getRangeByIndex(row, 3).setText('Giao');
+            sheet.getRangeByIndex(row, 5).setText('Nhận');
+            sheet.getRangeByIndex(row, 7).setText('Giờ cao điểm');
+            sheet.getRangeByIndex(row, 8).setText('Giao');
+            sheet.getRangeByIndex(row, 10).setText('Nhận');
+
+            row++;
+            sheet.getRangeByIndex(row, 2).setText('Giờ thấp điểm');
+            sheet.getRangeByIndex(row, 3).setText('Giao');
+            sheet.getRangeByIndex(row, 5).setText('Nhận');
+            sheet.getRangeByIndex(row, 7).setText('Giờ thấp điểm');
+            sheet.getRangeByIndex(row, 8).setText('Giao');
+            sheet.getRangeByIndex(row, 10).setText('Nhận');
+
+            row += 2;
+            stt++;
+          }
+        }
+      });
+
+      //Save and launch the excel.
+      final List<int> bytes = workbook.saveAsStream();
+      //Dispose the document.
+      workbook.dispose();
+      await _reportsDB.uploadExcelToStorage(
+          TakeBackReportRemoteProvider.excelElectricNamePrefix,
+          date,
+          Uint8List.fromList(bytes));
+      LoadingDialog.hide(context);
+      //Save and launch the file.
+      await Utils.saveAndLaunchFile(bytes, 'cong-to-thang-${date.month}.xlsx');
+    } catch (e) {
       LoadingDialog.hide(context);
       FailureDialog.show(context, 'Đã xảy ra lỗi');
     }
@@ -213,28 +313,42 @@ class _SummaryTakeBackPageState extends State<SummaryTakeBackPage> {
           SizedBox(
             height: 8.w,
           ),
-          Row(
-            children: [
-              Text('Vật tư tháng ${_currentDate.month}'.toUpperCase(),
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20.sp,
-                      color: Colors.blue[600])),
-              SizedBox(
-                width: 24.w,
-              ),
-              if (_reports[_currentDate.month - 1] != null &&
-                  _reports[_currentDate.month - 1]!.isNotEmpty)
+          Text('Vật tư tháng ${_currentDate.month}'.toUpperCase(),
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20.sp,
+                  color: Colors.blue[600])),
+          SizedBox(
+            height: 8.w,
+          ),
+          if (_reports[_currentDate.month - 1] != null &&
+              _reports[_currentDate.month - 1]!.isNotEmpty)
+            Row(
+              children: [
                 Expanded(
                   child: AppIconButton(
-                    onPressed: () => _generateExcel(
+                    onPressed: () => _generateDeviceExcel(
                         _currentDate, _reports[_currentDate.month - 1]!),
-                    label: 'Xuất file',
+                    label: 'Xuất file vật tư',
                     icon: Icons.upload_sharp,
+                    textSize: 14,
                   ),
                 ),
-            ],
-          ),
+                SizedBox(
+                  width: 16.w,
+                ),
+                Expanded(
+                  child: AppIconButton(
+                    onPressed: () => _generateElectricExcel(
+                        _currentDate, _reports[_currentDate.month - 1]!),
+                    label: 'Xuất file công tơ',
+                    icon: Icons.upload_sharp,
+                    color: Colors.orange,
+                    textSize: 14,
+                  ),
+                ),
+              ],
+            ),
           if (_reports[_currentDate.month - 1] == null ||
               _reports[_currentDate.month - 1]!.isEmpty)
             Padding(

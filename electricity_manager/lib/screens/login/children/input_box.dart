@@ -61,7 +61,7 @@ class _BoxInputLoginState extends State<BoxInputLogin> {
                   'ĐĂNG NHẬP',
                   style: Theme.of(context)
                       .primaryTextTheme
-                      .headline!
+                      .headline1!
                       .copyWith(fontSize: 26.sp, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(

@@ -16,15 +16,15 @@ class AppTheme {
       hintColor: primaryLight,
       cursorColor: secondary,
       primaryTextTheme: TextTheme(
-        title: TextStyle(color: colorTextWhite, fontWeight: FontWeight.bold),
-        headline: TextStyle(color: colorTextWhite, fontWeight: FontWeight.bold),
-        subhead: TextStyle(
+        subtitle1: TextStyle(color: colorTextWhite, fontWeight: FontWeight.bold),
+        headline1: TextStyle(color: colorTextWhite, fontWeight: FontWeight.bold),
+        subtitle2: TextStyle(
           color: colorTextBlack,
         ),
-        body2: TextStyle(
+        bodyText2: TextStyle(
           color: colorTextWhite,
         ),
-        body1: TextStyle(
+        bodyText1: TextStyle(
           color: colorTextWhite,
         ),
         caption: TextStyle(
@@ -33,10 +33,7 @@ class AppTheme {
         button: TextStyle(
           color: colorTextWhite, fontWeight: FontWeight.bold
         ),
-        subtitle: TextStyle(
-          color: colorTextWhite,
-        ),
-        display1: TextStyle(color: colorTextWhite, fontWeight: FontWeight.bold),
+        overline:TextStyle(color: colorTextWhite, fontWeight: FontWeight.bold),
       ),
       primaryIconTheme: IconThemeData(color: colorIconWhite),
       accentIconTheme: IconThemeData(color: colorIconWhite));

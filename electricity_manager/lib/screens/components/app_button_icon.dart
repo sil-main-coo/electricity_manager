@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 class AppIconButton extends StatelessWidget {
   const AppIconButton(
       {Key? key,
+      this.textSize,
       required this.icon,
       required this.onPressed,
       required this.label,
@@ -16,6 +17,7 @@ class AppIconButton extends StatelessWidget {
   final String label;
   final Color? color;
   final IconData icon;
+  final double? textSize;
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +27,13 @@ class AppIconButton extends StatelessWidget {
       child: RaisedButton.icon(
         onPressed: () => onPressed(),
         color: color,
-        icon: Icon(icon, color: colorIconWhite,),
+        icon: Icon(
+          icon,
+          color: colorIconWhite,
+        ),
         label: Text(
           label.toUpperCase(),
-          style: buttonWhite.copyWith(fontSize: 18.sp),
+          style: buttonWhite.copyWith(fontSize: textSize?.sp ?? 18.sp),
         ),
       ),
     );

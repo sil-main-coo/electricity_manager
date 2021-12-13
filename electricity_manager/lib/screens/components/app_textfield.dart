@@ -24,7 +24,7 @@ class AppTextField {
         textInputAction: action,
         obscureText: obscureText,
         cursorColor: primary,
-        style: Theme.of(context).primaryTextTheme.subtitle!.copyWith(
+        style: Theme.of(context).primaryTextTheme.subtitle2!.copyWith(
             fontSize: ScreenUtil().setSp(
               fzBody2,
             ),
@@ -33,7 +33,7 @@ class AppTextField {
             contentPadding:
                 const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
             labelText: label,
-            labelStyle: Theme.of(context).primaryTextTheme.subtitle!.copyWith(
+            labelStyle: Theme.of(context).primaryTextTheme.subtitle2!.copyWith(
                 fontSize: ScreenUtil().setSp(
                   fzBody2,
                 ),

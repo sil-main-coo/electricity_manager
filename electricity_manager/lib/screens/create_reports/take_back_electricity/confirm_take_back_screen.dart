@@ -113,6 +113,9 @@ class _ConfirmTakeBackScreenState extends State<ConfirmTakeBackScreen> {
             LoadingDialog.hide(context);
             Navigator.pop(context);
             Navigator.pop(context);
+          }else{
+            LoadingDialog.hide(context);
+            FailureDialog.show(context, 'Đã xảy ra lỗi. Vui lòng thử lại');
           }
         }
       } else {

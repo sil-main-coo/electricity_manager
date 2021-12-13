@@ -7,7 +7,7 @@
 
     <application
         android:icon="@mipmap/ic_launcher"
-        android:label="Quản lý điện lực"
+        android:label="Quản lý sự cố"
         android:requestLegacyExternalStorage="true">
         <activity
             android:name=".MainActivity"

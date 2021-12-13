@@ -162,7 +162,7 @@ class _ManagerDeviceScreenState extends State<ManagerDeviceScreen> {
           return Expanded(
             child: ListView.separated(
                 shrinkWrap: true,
-                primary: false,
+                // primary: false,
                 physics: const BouncingScrollPhysics(),
                 itemBuilder: (context, index) => _item(index+1, context, result[index]),
                 separatorBuilder: (_, __) => Divider(),

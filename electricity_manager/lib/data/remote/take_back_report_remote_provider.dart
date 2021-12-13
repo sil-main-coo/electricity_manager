@@ -16,7 +16,8 @@ class TakeBackReportRemoteProvider {
   static const finishedPath = 'hoan-thien';
   static const takeBackTemplateFile = 'mau-thu-hoi.docx';
 
-  static const excelNamePrefix = 'thong-ke-thu-hoi';
+  static const excelDeviceNamePrefix = 'thong-ke-thu-hoi';
+  static const excelElectricNamePrefix = 'thong-ke-cong-to';
 
   static const signPath = 'chu-ky';
   static const staffSignFileName = 'chu-ky-nhan-vien.jpg';
@@ -204,7 +205,7 @@ class TakeBackReportRemoteProvider {
   }
 
   /// upload *.xlsx file to storage
-  Future<String?> uploadExcelToStorage(
+  Future<String?> uploadExcelToStorage(String name,
       DateTime dateTime, Uint8List file) async {
     final year = dateTime.year.toString();
     final month = dateTime.month.toString();
@@ -212,7 +213,7 @@ class TakeBackReportRemoteProvider {
     final parentRef = _refMonthChartStorage
         .child(year)
         .child(month)
-        .child('$excelNamePrefix-$month-$year.xlsx');
+        .child('$name-$month-$year.xlsx');
     try {
       final uploadTask = await parentRef.putData(file);
 

@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:electricity_manager/models/user.dart';
 import 'device.dart';
+import 'electricity_model.dart';
 
 class TakeBackReportModel {
   String? id;
@@ -9,7 +10,8 @@ class TakeBackReportModel {
   String? clientAddress;
   List<UserProfile>? staffs;
   List<Device>? devices;
-  String? electricNumber;
+  ElectricModel? outputElectric;
+  ElectricModel? hangingElectric;
   List<String>? urlBeforeImages;
   List<String>? urlFinishedImages;
   String? urlManagerSignImage;
@@ -69,10 +71,12 @@ class TakeBackReportModel {
   }
 
   void setElectricityInfo(
-      {required String electricNumber,
+      {required ElectricModel outputElectric,
+        required ElectricModel hangingElectric,
       required List<Uint8List> beforeImages,
       required List<Uint8List> finishedImages}) {
-    this.electricNumber = electricNumber;
+    this.outputElectric = outputElectric;
+    this.hangingElectric = hangingElectric;
     this.beforeImages = beforeImages;
     this.finishedImages = finishedImages;
   }
@@ -95,7 +99,13 @@ class TakeBackReportModel {
     clientCode = json['clientCode'];
     clientName = json['clientName'];
     clientAddress = json['clientAddress'];
-    electricNumber = json['electricNumber'];
+    if (json['outputElectric'] != null) {
+      outputElectric = ElectricModel.fromJson(Map.from(json['outputElectric']));
+    }
+    if (json['hangingElectric'] != null) {
+      hangingElectric =
+          ElectricModel.fromJson(Map.from(json['hangingElectric']));
+    }
     if (json['staffs'] != null) {
       staffs = [];
       json['staffs'].forEach((v) {
@@ -177,7 +187,7 @@ class TakeBackReportModel {
     return {
       "\$aa": this.clientName,
       "\$bb": this.clientCode,
-      "\$cc": this.electricNumber,
+      "\$cc": this.outputElectric?.electricCode??'',
       "\$dd": this.clientAddress,
       "\$ee": createAt?.day.toString(),
       "\$ff": createAt?.month.toString(),
@@ -216,7 +226,8 @@ class TakeBackReportModel {
     data['clientCode'] = this.clientCode;
     data['clientName'] = this.clientName;
     data['clientAddress'] = this.clientAddress;
-    data['electricNumber'] = this.electricNumber;
+    data['outputElectric'] = this.outputElectric?.toJson();
+    data['hangingElectric'] = this.hangingElectric?.toJson();
     if (this.staffs != null) {
       data['staffs'] = this.staffs?.map((v) => v.toJson()).toList();
     }

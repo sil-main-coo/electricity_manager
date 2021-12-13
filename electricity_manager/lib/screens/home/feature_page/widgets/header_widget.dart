@@ -35,7 +35,7 @@ class FeatureHeader extends StatelessWidget {
             fit: BoxFit.scaleDown,
             child: Text(
               'Chào ${appBloc.user?.profile?.fullName},',
-              style: Theme.of(context).textTheme.title?.copyWith(
+              style: Theme.of(context).textTheme.subtitle1?.copyWith(
                   fontSize: 22.sp, fontWeight: FontWeight.bold, color: primary),
             ),
           ),

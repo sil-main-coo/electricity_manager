@@ -20,7 +20,7 @@ class AppDialog {
                 borderRadius: BorderRadius.all(Radius.circular(10))),
             backgroundColor: bgWhite,
             elevation: 5,
-            title: Text('Lỗi', style: Theme.of(context).primaryTextTheme.title!.copyWith(color: colorNoAttend),),
+            title: Text('Lỗi', style: Theme.of(context).primaryTextTheme.subtitle1!.copyWith(color: colorNoAttend),),
             content:  Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
@@ -29,7 +29,7 @@ class AppDialog {
                     textAlign: TextAlign.center,
                     style: Theme.of(context)
                         .primaryTextTheme
-                        .subtitle!.copyWith(color: colorTextBlack)
+                        .subtitle2!.copyWith(color: colorTextBlack)
                 ),
                 SizedBox(height: ScreenUtil().setHeight(40),),
                 FlatButton(
@@ -76,7 +76,7 @@ class AppDialog {
                       textAlign: TextAlign.center,
                       style: Theme.of(context)
                           .primaryTextTheme
-                          .subtitle!.copyWith(color: colorTextBlack),
+                          .subtitle2!.copyWith(color: colorTextBlack),
                     ),
                     SizedBox(height: ScreenUtil().setHeight(30),),
                     Row(
