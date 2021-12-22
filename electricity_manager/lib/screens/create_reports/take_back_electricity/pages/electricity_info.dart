@@ -31,8 +31,26 @@ class _ElectricityInfoPageState extends State<ElectricityInfoPage> {
   final _electricOutputCodeCtrl = TextEditingController();
   final _electricOutputValueCtrl = TextEditingController();
 
+  final _electricOutputLowShipTimeCtrl = TextEditingController();
+  final _electricOutputLowReceiveTimeCtrl = TextEditingController();
+
+  final _electricOutputNormalShipTimeCtrl = TextEditingController();
+  final _electricOutputNormalReceiveTimeCtrl = TextEditingController();
+
+  final _electricOutputHighShipTimeCtrl = TextEditingController();
+  final _electricOutputHighReceiveTimeCtrl = TextEditingController();
+
   final _electricHangingCodeCtrl = TextEditingController();
   final _electricHangingValueCtrl = TextEditingController();
+
+  final _electricHangingLowShipTimeCtrl = TextEditingController();
+  final _electricHangingLowReceiveTimeCtrl = TextEditingController();
+
+  final _electricHangingNormalShipTimeCtrl = TextEditingController();
+  final _electricHangingNormalReceiveTimeCtrl = TextEditingController();
+
+  final _electricHangingHighShipTimeCtrl = TextEditingController();
+  final _electricHangingHighReceiveTimeCtrl = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
 
@@ -72,16 +90,37 @@ class _ElectricityInfoPageState extends State<ElectricityInfoPage> {
       FocusScope.of(context).unfocus();
       widget.nextCallback(
           ElectricModel(
-            electricCode: _electricOutputCodeCtrl.text.trim(),
-            electricValue: _electricOutputValueCtrl.text.trim(),
-          ),
+              electricCode: _electricOutputCodeCtrl.text.trim(),
+              electricValue: _electricOutputValueCtrl.text.trim(),
+              lowTime: PointTimeModel(
+                receive: _electricOutputLowReceiveTimeCtrl.text.trim(),
+                ship: _electricOutputLowShipTimeCtrl.text.trim(),
+              ),
+              normalTime: PointTimeModel(
+                receive: _electricOutputNormalReceiveTimeCtrl.text.trim(),
+                ship: _electricOutputNormalShipTimeCtrl.text.trim(),
+              ),
+              highTime: PointTimeModel(
+                receive: _electricOutputHighReceiveTimeCtrl.text.trim(),
+                ship: _electricOutputHighShipTimeCtrl.text.trim(),
+              )),
           ElectricModel(
-            electricCode: _electricHangingCodeCtrl.text.trim(),
-            electricValue: _electricHangingValueCtrl.text.trim(),
-          ),
+              electricCode: _electricHangingCodeCtrl.text.trim(),
+              electricValue: _electricHangingValueCtrl.text.trim(),
+              lowTime: PointTimeModel(
+                receive: _electricHangingLowReceiveTimeCtrl.text.trim(),
+                ship: _electricHangingLowShipTimeCtrl.text.trim(),
+              ),
+              normalTime: PointTimeModel(
+                receive: _electricHangingNormalReceiveTimeCtrl.text.trim(),
+                ship: _electricHangingNormalShipTimeCtrl.text.trim(),
+              ),
+              highTime: PointTimeModel(
+                receive: _electricHangingHighReceiveTimeCtrl.text.trim(),
+                ship: _electricHangingHighShipTimeCtrl.text.trim(),
+              )),
           _beforePictures,
-          _afterPictures
-      );
+          _afterPictures);
     }
   }
 
@@ -146,6 +185,8 @@ class _ElectricityInfoPageState extends State<ElectricityInfoPage> {
   }
 
   Widget _electricityOutput() {
+    final labelStyle = TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -154,27 +195,136 @@ class _ElectricityInfoPageState extends State<ElectricityInfoPage> {
           style: Theme.of(context).textTheme.headline6?.copyWith(
               color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 20.sp),
         ),
-        AppField(
-          controller: _electricOutputCodeCtrl,
-          label: 'Số công tơ:',
-          keyboardType: TextInputType.number,
-          isRequired: false,
-          textInputAction: TextInputAction.done,
-          hintText: 'Nhập số công tơ',
+        Row(
+          children: [
+            Flexible(
+              child: AppField(
+                controller: _electricOutputCodeCtrl,
+                label: 'Số công tơ:',
+                keyboardType: TextInputType.number,
+                isRequired: false,
+                textInputAction: TextInputAction.done,
+                hintText: 'Nhập số công tơ',
+              ),
+            ),
+            SizedBox(
+              width: 8.w,
+            ),
+            Flexible(
+              child: AppField(
+                controller: _electricOutputValueCtrl,
+                label: 'Chỉ số:',
+                keyboardType: TextInputType.number,
+                isRequired: false,
+                textInputAction: TextInputAction.done,
+                hintText: 'Nhập chỉ số công tơ',
+              ),
+            ),
+          ],
         ),
-        AppField(
-          controller: _electricOutputValueCtrl,
-          label: 'Chỉ số:',
-          keyboardType: TextInputType.number,
-          isRequired: false,
-          textInputAction: TextInputAction.done,
-          hintText: 'Nhập chỉ số công tơ',
+        SizedBox(
+          height: 16.w,
+        ),
+        Text(
+          'Giờ thấp điểm',
+          style: labelStyle,
+        ),
+        Row(
+          children: [
+            Flexible(
+              child: AppField(
+                controller: _electricOutputLowShipTimeCtrl,
+                label: 'Giao',
+                isRequired: false,
+                textInputAction: TextInputAction.done,
+                hintText: 'Giao...',
+              ),
+            ),
+            SizedBox(
+              width: 8.w,
+            ),
+            Flexible(
+              child: AppField(
+                controller: _electricOutputLowReceiveTimeCtrl,
+                label: 'Nhận',
+                isRequired: false,
+                textInputAction: TextInputAction.done,
+                hintText: 'Nhận...',
+              ),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 16.w,
+        ),
+        Text(
+          'Giờ bình thường',
+          style: labelStyle,
+        ),
+        Row(
+          children: [
+            Flexible(
+              child: AppField(
+                controller: _electricOutputNormalShipTimeCtrl,
+                label: 'Giao',
+                isRequired: false,
+                textInputAction: TextInputAction.done,
+                hintText: 'Giao...',
+              ),
+            ),
+            SizedBox(
+              width: 8.w,
+            ),
+            Flexible(
+              child: AppField(
+                controller: _electricOutputNormalReceiveTimeCtrl,
+                label: 'Nhận',
+                isRequired: false,
+                textInputAction: TextInputAction.done,
+                hintText: 'Nhận...',
+              ),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 16.w,
+        ),
+        Text(
+          'Giờ cao điểm',
+          style: labelStyle,
+        ),
+        Row(
+          children: [
+            Flexible(
+              child: AppField(
+                controller: _electricOutputHighShipTimeCtrl,
+                label: 'Giao',
+                isRequired: false,
+                textInputAction: TextInputAction.done,
+                hintText: 'Giao...',
+              ),
+            ),
+            SizedBox(
+              width: 8.w,
+            ),
+            Flexible(
+              child: AppField(
+                controller: _electricOutputHighReceiveTimeCtrl,
+                label: 'Nhận',
+                isRequired: false,
+                textInputAction: TextInputAction.done,
+                hintText: 'Nhận...',
+              ),
+            ),
+          ],
         ),
       ],
     );
   }
 
   Widget _electricityHanging() {
+    final labelStyle = TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -183,21 +333,125 @@ class _ElectricityInfoPageState extends State<ElectricityInfoPage> {
           style: Theme.of(context).textTheme.headline6?.copyWith(
               color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 20.sp),
         ),
-        AppField(
-          controller: _electricHangingCodeCtrl,
-          label: 'Số công tơ:',
-          keyboardType: TextInputType.number,
-          textInputAction: TextInputAction.done,
-          isRequired: false,
-          hintText: 'Nhập số công tơ',
+        Row(
+          children: [
+            Flexible(
+              child: AppField(
+                controller: _electricHangingCodeCtrl,
+                label: 'Số công tơ:',
+                keyboardType: TextInputType.number,
+                textInputAction: TextInputAction.done,
+                isRequired: false,
+                hintText: 'Nhập số công tơ',
+              ),
+            ),
+            Flexible(
+              child: AppField(
+                controller: _electricHangingValueCtrl,
+                label: 'Chỉ số:',
+                isRequired: false,
+                keyboardType: TextInputType.number,
+                textInputAction: TextInputAction.done,
+                hintText: 'Nhập chỉ số công tơ',
+              ),
+            ),
+          ],
         ),
-        AppField(
-          controller: _electricHangingValueCtrl,
-          label: 'Chỉ số:',
-          isRequired: false,
-          keyboardType: TextInputType.number,
-          textInputAction: TextInputAction.done,
-          hintText: 'Nhập chỉ số công tơ',
+        SizedBox(
+          height: 16.w,
+        ),
+        Text(
+          'Giờ thấp điểm',
+          style: labelStyle,
+        ),
+        Row(
+          children: [
+            Flexible(
+              child: AppField(
+                controller: _electricHangingLowShipTimeCtrl,
+                label: 'Giao',
+                isRequired: false,
+                textInputAction: TextInputAction.done,
+                hintText: 'Giao...',
+              ),
+            ),
+            SizedBox(
+              width: 8.w,
+            ),
+            Flexible(
+              child: AppField(
+                controller: _electricHangingLowReceiveTimeCtrl,
+                label: 'Nhận',
+                isRequired: false,
+                textInputAction: TextInputAction.done,
+                hintText: 'Nhận...',
+              ),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 16.w,
+        ),
+        Text(
+          'Giờ bình thường',
+          style: labelStyle,
+        ),
+        Row(
+          children: [
+            Flexible(
+              child: AppField(
+                controller: _electricHangingNormalShipTimeCtrl,
+                label: 'Giao',
+                isRequired: false,
+                textInputAction: TextInputAction.done,
+                hintText: 'Giao...',
+              ),
+            ),
+            SizedBox(
+              width: 8.w,
+            ),
+            Flexible(
+              child: AppField(
+                controller: _electricHangingNormalReceiveTimeCtrl,
+                label: 'Nhận',
+                isRequired: false,
+                textInputAction: TextInputAction.done,
+                hintText: 'Nhận...',
+              ),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 16.w,
+        ),
+        Text(
+          'Giờ cao điểm',
+          style: labelStyle,
+        ),
+        Row(
+          children: [
+            Flexible(
+              child: AppField(
+                controller: _electricHangingHighShipTimeCtrl,
+                label: 'Giao',
+                isRequired: false,
+                textInputAction: TextInputAction.done,
+                hintText: 'Giao...',
+              ),
+            ),
+            SizedBox(
+              width: 8.w,
+            ),
+            Flexible(
+              child: AppField(
+                controller: _electricHangingHighReceiveTimeCtrl,
+                label: 'Nhận',
+                isRequired: false,
+                textInputAction: TextInputAction.done,
+                hintText: 'Nhận...',
+              ),
+            ),
+          ],
         ),
       ],
     );

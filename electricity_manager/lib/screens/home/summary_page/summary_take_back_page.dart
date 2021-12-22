@@ -183,33 +183,54 @@ class _SummaryTakeBackPageState extends State<SummaryTakeBackPage> {
             sheet.getRangeByIndex(row, 2).setText('CÔNG TƠ THÁO');
             sheet.getRangeByIndex(row, 2).cellStyle.bold = true;
             sheet.getRangeByIndex(row, 3).setText(outputElectric.electricCode);
+            sheet.getRangeByIndex(row, 4).setText('Chỉ số');
+            sheet.getRangeByIndex(row, 5).setText(outputElectric.electricValue);
+
             sheet.getRangeByIndex(row, 7).setText('CÔNG TƠ TREO');
             sheet.getRangeByIndex(row, 7).cellStyle.bold = true;
             sheet.getRangeByIndex(row, 8).setText(hangingElectric.electricCode);
+            sheet.getRangeByIndex(row, 9).setText('Chỉ số');
+            sheet.getRangeByIndex(row, 10).setText(hangingElectric.electricValue);
 
             row++;
             sheet.getRangeByIndex(row, 2).setText('Giờ bình thường');
             sheet.getRangeByIndex(row, 3).setText('Giao');
+            sheet.getRangeByIndex(row, 4).setText(outputElectric.normalTime?.ship);
             sheet.getRangeByIndex(row, 5).setText('Nhận');
+            sheet.getRangeByIndex(row, 6).setText(outputElectric.normalTime?.receive);
+
+
             sheet.getRangeByIndex(row, 7).setText('Giờ bình thường');
             sheet.getRangeByIndex(row, 8).setText('Giao');
+            sheet.getRangeByIndex(row, 9).setText(hangingElectric.normalTime?.ship);
             sheet.getRangeByIndex(row, 10).setText('Nhận');
+            sheet.getRangeByIndex(row, 11).setText(hangingElectric.normalTime?.receive);
 
             row++;
             sheet.getRangeByIndex(row, 2).setText('Giờ cao điểm');
             sheet.getRangeByIndex(row, 3).setText('Giao');
+            sheet.getRangeByIndex(row, 4).setText(outputElectric.highTime?.ship);
             sheet.getRangeByIndex(row, 5).setText('Nhận');
+            sheet.getRangeByIndex(row, 6).setText(outputElectric.highTime?.receive);
+
             sheet.getRangeByIndex(row, 7).setText('Giờ cao điểm');
             sheet.getRangeByIndex(row, 8).setText('Giao');
+            sheet.getRangeByIndex(row, 9).setText(hangingElectric.highTime?.ship);
             sheet.getRangeByIndex(row, 10).setText('Nhận');
+            sheet.getRangeByIndex(row, 11).setText(hangingElectric.highTime?.receive);
 
             row++;
             sheet.getRangeByIndex(row, 2).setText('Giờ thấp điểm');
             sheet.getRangeByIndex(row, 3).setText('Giao');
+            sheet.getRangeByIndex(row, 9).setText(hangingElectric.lowTime?.ship);
             sheet.getRangeByIndex(row, 5).setText('Nhận');
+            sheet.getRangeByIndex(row, 11).setText(hangingElectric.lowTime?.receive);
+
             sheet.getRangeByIndex(row, 7).setText('Giờ thấp điểm');
             sheet.getRangeByIndex(row, 8).setText('Giao');
+            sheet.getRangeByIndex(row, 9).setText(hangingElectric.lowTime?.ship);
             sheet.getRangeByIndex(row, 10).setText('Nhận');
+            sheet.getRangeByIndex(row, 11).setText(hangingElectric.lowTime?.receive);
 
             row += 2;
             stt++;
