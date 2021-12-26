@@ -122,9 +122,12 @@ class _SummaryResolvePageState extends State<SummaryResolvePage> {
       workbook.dispose();
 
       await _reportsDB.uploadExcelToStorage(date, Uint8List.fromList(bytes));
-      LoadingDialog.hide(context);
       //Save and launch the file.
-      await Utils.saveAndLaunchFile(bytes, 'xuat-kho-thang-${date.month}.xlsx');
+      final result = await Utils.saveAndLaunchFile(bytes, 'xuat-kho-thang-${date.month}.xlsx');
+      LoadingDialog.hide(context);
+      if(!result){
+        FailureDialog.show(context, 'Bạn cần cấp quyền bộ nhớ!');
+      }
     } catch (e) {
       print(e);
       LoadingDialog.hide(context);

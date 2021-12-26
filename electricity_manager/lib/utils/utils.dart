@@ -6,6 +6,7 @@ import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Utils {
@@ -31,9 +32,25 @@ class Utils {
 
   ///To save the Excel file in the device
   ///To save the Excel file in the device
-  static Future<void> saveAndLaunchFile(
+  static Future<bool> saveAndLaunchFile(
       List<int> bytes, String fileName) async {
     //Get the storage folder location using path_provider package.
+    var status = await Permission.storage.status;
+
+    if (!status.isLimited && !status.isGranted) {
+      final recheck = await Permission.storage.request();
+      print(recheck);
+      if (!recheck.isGranted) {
+        return false;
+      }
+    }
+    await _handleSaveAndLaunchFile(bytes, fileName);
+
+    return true;
+  }
+
+  static Future<void> _handleSaveAndLaunchFile(
+      List<int> bytes, String fileName) async {
     String? path;
     if (Platform.isAndroid) {
       path = await Utils.getDownloadPath();
@@ -69,10 +86,20 @@ class Utils {
         .asUint8List();
   }
 
-  static Future<String> getDownloadPath() async {
-    if (Platform.isAndroid) {
-      return "/storage/emulated/0/Download";
+  static Future<String?> getDownloadPath() async {
+    var status = await Permission.storage.status;
+
+    if (!status.isLimited && !status.isGranted) {
+      final recheck = await Permission.storage.request();
+      // print(recheck);
+      if (!recheck.isGranted) {
+        throw Exception('Bạn cần cấp quyền bộ nhớ');
+      }
     }
+
+    // if (Platform.isAndroid) {
+    //   return "/storage/emulated/0";
+    // }
     return (await getApplicationDocumentsDirectory()).path;
   }
 }

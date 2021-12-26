@@ -130,7 +130,10 @@ class _SummaryTakeBackPageState extends State<SummaryTakeBackPage> {
           Uint8List.fromList(bytes));
       LoadingDialog.hide(context);
       //Save and launch the file.
-      await Utils.saveAndLaunchFile(bytes, 'thu-hoi-thang-${date.month}.xlsx');
+      final result = await Utils.saveAndLaunchFile(bytes, 'thu-hoi-thang-${date.month}.xlsx');
+      if(!result){
+        FailureDialog.show(context, 'Bạn cần cấp quyền bộ nhớ!');
+      }
     } catch (e) {
       print(e);
       LoadingDialog.hide(context);
@@ -219,12 +222,6 @@ class _SummaryTakeBackPageState extends State<SummaryTakeBackPage> {
             sheet.getRangeByIndex(row, 10).setText('Nhận');
             sheet.getRangeByIndex(row, 11).setText(hangingElectric.highTime?.receive);
 
-            print('output: ${outputElectric.lowTime?.ship}');
-            print('output: ${outputElectric.lowTime?.receive}');
-
-            print('hangingElectric: ${hangingElectric.lowTime?.ship}');
-            print('hangingElectric: ${hangingElectric.lowTime?.receive}');
-
             row++;
             sheet.getRangeByIndex(row, 2).setText('Giờ thấp điểm');
             sheet.getRangeByIndex(row, 3).setText('Giao');
@@ -252,12 +249,17 @@ class _SummaryTakeBackPageState extends State<SummaryTakeBackPage> {
           TakeBackReportRemoteProvider.excelElectricNamePrefix,
           date,
           Uint8List.fromList(bytes));
-      LoadingDialog.hide(context);
+
       //Save and launch the file.
-      await Utils.saveAndLaunchFile(bytes, 'cong-to-thang-${date.month}.xlsx');
+      final result = await Utils.saveAndLaunchFile(bytes, 'cong-to-thang-${date.month}.xlsx');
+      LoadingDialog.hide(context);
+      if(!result){
+        FailureDialog.show(context, 'Bạn cần cấp quyền bộ nhớ!');
+      }
+
     } catch (e) {
       LoadingDialog.hide(context);
-      FailureDialog.show(context, 'Đã xảy ra lỗi');
+      FailureDialog.show(context, 'Đã xảy ra lỗi: $e');
     }
   }
 

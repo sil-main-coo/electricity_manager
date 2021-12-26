@@ -123,10 +123,13 @@ class ResolveReportRemoteProvider {
       var response = await request.close();
       if (response.statusCode == 200) {
         var bytes = await consolidateHttpClientResponseBytes(response);
-        String dir = await Utils.getDownloadPath();
-        _templateFile = new File('$dir/$takeBackTemplateFile');
-        await _templateFile?.writeAsBytes(bytes);
-        return _templateFile;
+        final dir = await Utils.getDownloadPath();
+
+        if (dir != null) {
+          _templateFile = new File('$dir/$takeBackTemplateFile');
+          await _templateFile?.writeAsBytes(bytes);
+          return _templateFile;
+        }
       }
     } catch (e) {
       print(e);
@@ -167,12 +170,13 @@ class ResolveReportRemoteProvider {
 
         var response = await http.Response.fromStream(streamedResponse);
         var bytes = response.bodyBytes;
-        String dir = await Utils.getDownloadPath();
-
-        File resultFile = new File(
-            '$dir/$reportNamePrefix-${reportModel.id ?? 'preview'}.docx');
-        await resultFile.writeAsBytes(bytes);
-        return resultFile;
+        final dir = await Utils.getDownloadPath();
+        if (dir != null) {
+          File resultFile = new File(
+              '$dir/$reportNamePrefix-${reportModel.id ?? 'preview'}.docx');
+          await resultFile.writeAsBytes(bytes);
+          return resultFile;
+        }
       } else {
         print('templateFile is empty');
       }
@@ -189,13 +193,16 @@ class ResolveReportRemoteProvider {
 
       if (response.statusCode == 200) {
         var bytes = response.bodyBytes;
-        String dir = await Utils.getDownloadPath();
-        File resultFile = new File('$dir/$reportNamePrefix-$reportID.docx');
-        await resultFile.writeAsBytes(bytes);
-        return resultFile;
+        final dir = await Utils.getDownloadPath();
+
+        if (dir != null) {
+          File resultFile = new File('$dir/$reportNamePrefix-$reportID.docx');
+          await resultFile.writeAsBytes(bytes);
+          return resultFile;
+        }
       }
     } catch (e) {
-      print(e);
+      throw e;
     }
     return null;
   }

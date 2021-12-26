@@ -83,6 +83,7 @@ class TakeBackReportRemoteProvider {
       }
     } catch (e) {
       print(e);
+      throw e;
     }
     return result;
   }
@@ -96,8 +97,8 @@ class TakeBackReportRemoteProvider {
       return model;
     } catch (e) {
       print(e);
+      throw e;
     }
-    return null;
   }
 
   Future<void> updateReportOnDB(String id, Map<String, dynamic> data) async {
@@ -127,13 +128,17 @@ class TakeBackReportRemoteProvider {
       var response = await request.close();
       if (response.statusCode == 200) {
         var bytes = await consolidateHttpClientResponseBytes(response);
-        String dir = await Utils.getDownloadPath();
-        _templateFile = new File('$dir/$takeBackTemplateFile');
-        await _templateFile?.writeAsBytes(bytes);
-        return _templateFile;
+        final  dir = await Utils.getDownloadPath();
+
+        if(dir == null){
+          _templateFile = new File('$dir/$takeBackTemplateFile');
+          await _templateFile?.writeAsBytes(bytes);
+          return _templateFile;
+        }
       }
     } catch (e) {
       print(e);
+      throw e;
     }
     return null;
   }
@@ -175,17 +180,22 @@ class TakeBackReportRemoteProvider {
 
         var response = await http.Response.fromStream(streamedResponse);
         var bytes = response.bodyBytes;
-        String dir = await Utils.getDownloadPath();
 
-        File resultFile = new File(
-            '$dir/$reportNamePrefix-${reportModel.id ?? 'preview'}.docx');
-        await resultFile.writeAsBytes(bytes);
-        return resultFile;
+        final dir = await Utils.getDownloadPath();
+
+        if(dir == null ){
+          File resultFile = new File(
+              '$dir/$reportNamePrefix-${reportModel.id ?? 'preview'}.docx');
+          await resultFile.writeAsBytes(bytes);
+          return resultFile;
+        }
+
       } else {
         print('templateFile is empty');
       }
     } catch (e) {
       print(e);
+      throw e;
     }
     return null;
   }
@@ -197,13 +207,17 @@ class TakeBackReportRemoteProvider {
 
       if (response.statusCode == 200) {
         var bytes = response.bodyBytes;
-        String dir = await Utils.getDownloadPath();
-        File resultFile = new File('$dir/$reportNamePrefix-$reportID.docx');
-        await resultFile.writeAsBytes(bytes);
-        return resultFile;
+        final dir = await Utils.getDownloadPath();
+
+        if(dir!=null){
+          File resultFile = new File('$dir/$reportNamePrefix-$reportID.docx');
+          await resultFile.writeAsBytes(bytes);
+          return resultFile;
+        }
       }
     } catch (e) {
       print(e);
+      throw e;
     }
     return null;
   }
@@ -224,6 +238,7 @@ class TakeBackReportRemoteProvider {
       return uploadTask.ref.getDownloadURL();
     } catch (e) {
       print(e);
+      throw e;
     }
     return null;
   }
@@ -239,6 +254,7 @@ class TakeBackReportRemoteProvider {
       return uploadTask.ref.getDownloadURL();
     } catch (e) {
       print(e);
+      throw e;
     }
     return null;
   }
@@ -253,6 +269,7 @@ class TakeBackReportRemoteProvider {
       return uploadTask.ref.getDownloadURL();
     } catch (e) {
       print(e);
+      throw e;
     }
     return null;
   }

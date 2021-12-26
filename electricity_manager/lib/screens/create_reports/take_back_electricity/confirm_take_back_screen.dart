@@ -28,12 +28,17 @@ class _ConfirmTakeBackScreenState extends State<ConfirmTakeBackScreen> {
   File? _fileWord;
 
   Future _reviewWord() async {
-    LoadingDialog.show(context);
-    await _createWordFile();
-    LoadingDialog.hide(context);
-    if (_fileWord != null) {
-      print(_fileWord?.path);
-      await Utils.openFile(_fileWord!.path);
+    try {
+      LoadingDialog.show(context);
+      await _createWordFile();
+      LoadingDialog.hide(context);
+      if (_fileWord != null) {
+        print(_fileWord?.path);
+        await Utils.openFile(_fileWord!.path);
+      }
+    }catch(e){
+      LoadingDialog.hide(context);
+      FailureDialog.show(context, 'Đã xảy ra lỗi: $e');
     }
   }
 

@@ -22,13 +22,18 @@ class DetailTakeBackReportScreen extends StatelessWidget {
   File? _fileWord;
 
   Future _readWord(BuildContext context) async {
-    LoadingDialog.show(context);
-    if (_fileWord == null) {
-      _fileWord =
-          await _reportsDB.downloadFile(reportModel.id!, reportModel.urlWord!);
+    try {
+      LoadingDialog.show(context);
+      if (_fileWord == null) {
+        _fileWord =
+        await _reportsDB.downloadFile(reportModel.id!, reportModel.urlWord!);
+      }
+      LoadingDialog.hide(context);
+      await Utils.openFile(_fileWord!.path);
+    }catch(e){
+      LoadingDialog.hide(context);
+      FailureDialog.show(context, 'Đã xảy ra lỗi: $e');
     }
-    LoadingDialog.hide(context);
-    await Utils.openFile(_fileWord!.path);
   }
 
   Future _handlingRemoveReport(BuildContext context) async {

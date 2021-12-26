@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:electricity_manager/models/electricity_model.dart';
 import 'package:electricity_manager/models/take_back_report_model.dart';
 import 'package:electricity_manager/screens/components/hero_photo_view_screen.dart';
 import 'package:electricity_manager/screens/components/layout_have_floating_button.dart';
@@ -85,93 +86,16 @@ class TakeBackDetailLayout extends StatelessWidget {
   }
 
   Widget _electricityInfoWidget(BuildContext context) {
-    final titleStyle = TextStyle(
-        fontWeight: FontWeight.bold, fontSize: 20.sp, color: Colors.blue[600]);
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'CÔNG TƠ THÁO',
-          style: titleStyle,
-        ),
-        SizedBox(
-          height: 8.w,
-        ),
-        _labelValueText(
-            'Số công tơ: ', reportModel.outputElectric?.electricCode ?? ''),
-        SizedBox(
-          height: 4.w,
-        ),
-        _labelValueText('Chỉ số công tơ: ',
-            reportModel.outputElectric?.electricValue ?? ''),
+        _electricInfo('CÔNG TƠ THÁO', reportModel.outputElectric!),
         SizedBox(
           height: 16.w,
         ),
-        _labelValueText('Giờ thấp điểm: '),
-        _labelValueText(
-            'Giao: ${reportModel.outputElectric?.lowTime?.ship ?? ''}'),
-        _labelValueText(
-            'Nhận: ${reportModel.outputElectric?.lowTime?.receive ?? ''}'),
+        _electricInfo('CÔNG TƠ TREO', reportModel.hangingElectric!),
         SizedBox(
-          height: 16.w,
-        ),
-        _labelValueText('Giờ bình thường: '),
-        _labelValueText(
-            'Giao: ${reportModel.outputElectric?.normalTime?.ship ?? ''}'),
-        _labelValueText(
-            'Nhận: ${reportModel.outputElectric?.normalTime?.receive ?? ''}'),
-        SizedBox(
-          height: 16.w,
-        ),
-        _labelValueText('Giờ cao điểm: '),
-        _labelValueText(
-            'Giao: ${reportModel.outputElectric?.highTime?.ship ?? ''}'),
-        _labelValueText(
-            'Nhận: ${reportModel.outputElectric?.highTime?.receive ?? ''}'),
-        SizedBox(
-          height: 16.w,
-        ),
-        Text(
-          'CÔNG TƠ TREO',
-          style: titleStyle,
-        ),
-        SizedBox(
-          height: 8.w,
-        ),
-        _labelValueText(
-            'Số công tơ: ', reportModel.hangingElectric?.electricCode ?? ''),
-        SizedBox(
-          height: 4.w,
-        ),
-        _labelValueText('Chỉ số công tơ: ',
-            reportModel.hangingElectric?.electricValue ?? ''),
-        SizedBox(
-          height: 16.w,
-        ),
-        _labelValueText('Giờ thấp điểm: '),
-        _labelValueText(
-            'Giao: ${reportModel.hangingElectric?.lowTime?.ship ?? ''}'),
-        _labelValueText(
-            'Nhận: ${reportModel.hangingElectric?.lowTime?.receive ?? ''}'),
-        SizedBox(
-          height: 16.w,
-        ),
-        _labelValueText('Giờ bình thường: '),
-        _labelValueText(
-            'Giao: ${reportModel.hangingElectric?.normalTime?.ship ?? ''}'),
-        _labelValueText(
-            'Nhận: ${reportModel.hangingElectric?.normalTime?.receive ?? ''}'),
-        SizedBox(
-          height: 16.w,
-        ),
-        _labelValueText('Giờ cao điểm: '),
-        _labelValueText(
-            'Giao: ${reportModel.hangingElectric?.highTime?.ship ?? ''}'),
-        _labelValueText(
-            'Nhận: ${reportModel.hangingElectric?.highTime?.receive ?? ''}'),
-        SizedBox(
-          height: 16.w,
+          height: 20.w,
         ),
         _labelValueText('Ảnh hiện trường sự cố: '),
         SizedBox(
@@ -348,8 +272,10 @@ class TakeBackDetailLayout extends StatelessWidget {
     );
   }
 
-  Widget _labelValueText(String? label, [String? value]) {
-    final labelStyle = body.copyWith(fontSize: 16.sp);
+  Widget _labelValueText(String? label,
+      [String? value, bool labelBold = false]) {
+    final labelStyle = body.copyWith(
+        fontSize: 16.sp, fontWeight: labelBold ? FontWeight.w600 : null);
     final valueStyle = labelStyle.copyWith(
         fontWeight: FontWeight.w600, color: Colors.blueAccent);
 
@@ -357,7 +283,7 @@ class TakeBackDetailLayout extends StatelessWidget {
         text: TextSpan(
             style: labelStyle,
             text: label,
-            children: [TextSpan(style: valueStyle, text: value)]));
+            children: [TextSpan(style: valueStyle, text: ' ${value ?? ''}')]));
   }
 
   Widget _containerHasPicture(
@@ -408,6 +334,90 @@ class TakeBackDetailLayout extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _electricInfo(String title, ElectricModel electric) {
+    final titleStyle = TextStyle(
+        fontWeight: FontWeight.bold, fontSize: 20.sp, color: Colors.blue[600]);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: titleStyle,
+        ),
+        SizedBox(
+          height: 8.w,
+        ),
+        _labelValueText('Số công tơ: ', electric.electricCode ?? ''),
+        SizedBox(
+          height: 4.w,
+        ),
+        _labelValueText('Chỉ số công tơ: ', electric.electricValue ?? ''),
+        SizedBox(
+          height: 16.w,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _labelValueText('CHIỀU GIAO', '', true),
+                  SizedBox(
+                    height: 8.w,
+                  ),
+                  _labelValueText(
+                      'Giờ bình thường: ', electric.normalTime?.ship ?? ''),
+                  SizedBox(
+                    height: 4.w,
+                  ),
+                  _labelValueText(
+                      'Giờ cao điểm:', '${electric.highTime?.ship ?? ''}'),
+                  SizedBox(
+                    height: 4.w,
+                  ),
+                  _labelValueText(
+                      'Giờ thấp điểm:', '${electric.lowTime?.ship ?? ''}'),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 2),
+              child: VerticalDivider(
+                width: 1,
+                color: Colors.blue,
+              ),
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _labelValueText('CHIỀU NHẬN', '', true),
+                  SizedBox(
+                    height: 8.w,
+                  ),
+                  _labelValueText(
+                      'Giờ bình thường: ', electric.normalTime?.receive ?? ''),
+                  SizedBox(
+                    height: 4.w,
+                  ),
+                  _labelValueText(
+                      'Giờ cao điểm:', '${electric.highTime?.receive ?? ''}'),
+                  SizedBox(
+                    height: 4.w,
+                  ),
+                  _labelValueText(
+                      'Giờ thấp điểm:', '${electric.lowTime?.receive ?? ''}'),
+                ],
+              ),
+            )
+          ],
+        )
+      ],
     );
   }
 }
