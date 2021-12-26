@@ -8,7 +8,7 @@ import 'package:electricity_manager/models/take_back_report_model.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:http_parser/http_parser.dart';
 
 class TakeBackReportRemoteProvider {
   static const reportNamePrefix = 'bien-ban-thu-hoi';
@@ -147,24 +147,28 @@ class TakeBackReportRemoteProvider {
 
         request.files.add(new http.MultipartFile.fromBytes(
             'docx', template.readAsBytesSync(),
-            filename: takeBackTemplateFile));
+            filename: 'template.docx'));
+
         request.fields['data'] = json.encode(reportModel.toDataWordJson());
         request.fields['table'] = json.encode(reportModel.toTableWordJson());
         request.fields['table_position'] = '0';
 
         request.files.add(new http.MultipartFile.fromBytes(
             'image1', reportModel.staffSignImage!,
-            filename: staffSignFileName));
+            filename: staffSignFileName,
+            contentType: MediaType('image', 'jpeg')));
         request.fields['label1'] = 'Chữ ký nhân viên';
 
         request.files.add(new http.MultipartFile.fromBytes(
             'image2', reportModel.managerSignImage!,
-            filename: managerSignFileName));
+            filename: managerSignFileName,
+            contentType: MediaType('image', 'jpeg')));
         request.fields['label2'] = 'Chữ ký trưởng phòng';
 
         request.files.add(new http.MultipartFile.fromBytes(
             'image3', reportModel.presidentSignImage!,
-            filename: presidentSignFileName));
+            filename: presidentSignFileName,
+            contentType: MediaType('image', 'jpeg')));
         request.fields['label3'] = 'Chữ ký giám đốc';
 
         final streamedResponse = await request.send();
@@ -205,8 +209,8 @@ class TakeBackReportRemoteProvider {
   }
 
   /// upload *.xlsx file to storage
-  Future<String?> uploadExcelToStorage(String name,
-      DateTime dateTime, Uint8List file) async {
+  Future<String?> uploadExcelToStorage(
+      String name, DateTime dateTime, Uint8List file) async {
     final year = dateTime.year.toString();
     final month = dateTime.month.toString();
 

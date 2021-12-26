@@ -7,11 +7,11 @@ class ImagePickerHelper {
 
   Future<XFile?> imgFromCamera() async {
     return await picker.pickImage(
-        source: ImageSource.camera, imageQuality: 100);
+        source: ImageSource.camera, imageQuality: 25);
   }
 
   Future<XFile?> imgFromGallery() async {
     return await picker.pickImage(
-        source: ImageSource.gallery, imageQuality: 100);
+        source: ImageSource.gallery, imageQuality: 25);
   }
 }

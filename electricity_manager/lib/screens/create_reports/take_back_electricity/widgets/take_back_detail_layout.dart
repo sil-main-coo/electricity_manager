@@ -108,6 +108,30 @@ class TakeBackDetailLayout extends StatelessWidget {
         SizedBox(
           height: 16.w,
         ),
+        _labelValueText('Giờ thấp điểm: '),
+        _labelValueText(
+            'Giao: ${reportModel.outputElectric?.lowTime?.ship ?? ''}'),
+        _labelValueText(
+            'Nhận: ${reportModel.outputElectric?.lowTime?.receive ?? ''}'),
+        SizedBox(
+          height: 16.w,
+        ),
+        _labelValueText('Giờ bình thường: '),
+        _labelValueText(
+            'Giao: ${reportModel.outputElectric?.normalTime?.ship ?? ''}'),
+        _labelValueText(
+            'Nhận: ${reportModel.outputElectric?.normalTime?.receive ?? ''}'),
+        SizedBox(
+          height: 16.w,
+        ),
+        _labelValueText('Giờ cao điểm: '),
+        _labelValueText(
+            'Giao: ${reportModel.outputElectric?.highTime?.ship ?? ''}'),
+        _labelValueText(
+            'Nhận: ${reportModel.outputElectric?.highTime?.receive ?? ''}'),
+        SizedBox(
+          height: 16.w,
+        ),
         Text(
           'CÔNG TƠ TREO',
           style: titleStyle,
@@ -122,6 +146,30 @@ class TakeBackDetailLayout extends StatelessWidget {
         ),
         _labelValueText('Chỉ số công tơ: ',
             reportModel.hangingElectric?.electricValue ?? ''),
+        SizedBox(
+          height: 16.w,
+        ),
+        _labelValueText('Giờ thấp điểm: '),
+        _labelValueText(
+            'Giao: ${reportModel.hangingElectric?.lowTime?.ship ?? ''}'),
+        _labelValueText(
+            'Nhận: ${reportModel.hangingElectric?.lowTime?.receive ?? ''}'),
+        SizedBox(
+          height: 16.w,
+        ),
+        _labelValueText('Giờ bình thường: '),
+        _labelValueText(
+            'Giao: ${reportModel.hangingElectric?.normalTime?.ship ?? ''}'),
+        _labelValueText(
+            'Nhận: ${reportModel.hangingElectric?.normalTime?.receive ?? ''}'),
+        SizedBox(
+          height: 16.w,
+        ),
+        _labelValueText('Giờ cao điểm: '),
+        _labelValueText(
+            'Giao: ${reportModel.hangingElectric?.highTime?.ship ?? ''}'),
+        _labelValueText(
+            'Nhận: ${reportModel.hangingElectric?.highTime?.receive ?? ''}'),
         SizedBox(
           height: 16.w,
         ),

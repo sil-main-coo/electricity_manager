@@ -19,11 +19,11 @@ class ElectricModel {
     }
 
     if (json['normalTime'] != null) {
-      lowTime = PointTimeModel.fromJson(Map.from(json['normalTime']));
+      normalTime = PointTimeModel.fromJson(Map.from(json['normalTime']));
     }
 
     if (json['highTime'] != null) {
-      lowTime = PointTimeModel.fromJson(Map.from(json['highTime']));
+      highTime = PointTimeModel.fromJson(Map.from(json['highTime']));
     }
   }
 

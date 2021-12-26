@@ -219,12 +219,18 @@ class _SummaryTakeBackPageState extends State<SummaryTakeBackPage> {
             sheet.getRangeByIndex(row, 10).setText('Nhận');
             sheet.getRangeByIndex(row, 11).setText(hangingElectric.highTime?.receive);
 
+            print('output: ${outputElectric.lowTime?.ship}');
+            print('output: ${outputElectric.lowTime?.receive}');
+
+            print('hangingElectric: ${hangingElectric.lowTime?.ship}');
+            print('hangingElectric: ${hangingElectric.lowTime?.receive}');
+
             row++;
             sheet.getRangeByIndex(row, 2).setText('Giờ thấp điểm');
             sheet.getRangeByIndex(row, 3).setText('Giao');
-            sheet.getRangeByIndex(row, 9).setText(hangingElectric.lowTime?.ship);
+            sheet.getRangeByIndex(row, 4).setText(outputElectric.lowTime?.ship);
             sheet.getRangeByIndex(row, 5).setText('Nhận');
-            sheet.getRangeByIndex(row, 11).setText(hangingElectric.lowTime?.receive);
+            sheet.getRangeByIndex(row, 6).setText(outputElectric.lowTime?.receive);
 
             sheet.getRangeByIndex(row, 7).setText('Giờ thấp điểm');
             sheet.getRangeByIndex(row, 8).setText('Giao');
